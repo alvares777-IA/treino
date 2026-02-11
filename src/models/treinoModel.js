@@ -1,20 +1,22 @@
 async function listar(conn, idUsuario) {
     const sql = `
         SELECT t.no_treino, t.id_treino,
-               NVL((SELECT SUM(NVL(e.qt_calorias,0) * NVL(e.qt_repeticao,0))
-                    FROM campeonato.exercicios e
-                    WHERE e.id_treino = t.id_treino), 0) AS total_calorias
+               NVL((SELECT SUM(NVL(td.qt_calorias,0))
+                    FROM campeonato.treino_dia td
+                    WHERE td.id_treino = t.id_treino
+                    AND td.id_usuario = t.id_usuario), 0) AS total_calorias
         FROM campeonato.treinos t
         WHERE t.id_usuario = :v_id
     `;
     return await conn.execute(sql, { v_id: idUsuario });
 }
 
-async function criar(conn, idUsuario, nome) {
+async function criar(conn, idUsuario, nome, pularCatalogo = false) {
     const sqlId = `SELECT NVL(MAX(id_treino), 0) + 1 AS novo_id FROM campeonato.treinos`;
     const resId = await conn.execute(sqlId);
     const novoId = resId.rows[0][0];
 
+    // Criar o treino
     const sqlInsert = `
         INSERT INTO campeonato.treinos (id_usuario, id_treino, no_treino)
         VALUES (:v_usuario, :v_id_treino, :v_no_treino)
@@ -23,7 +25,41 @@ async function criar(conn, idUsuario, nome) {
         v_usuario: idUsuario,
         v_id_treino: novoId,
         v_no_treino: nome
-    }, { autoCommit: true });
+    });
+
+    // Clonar exercícios do catálogo (exercicios_academia) se houver e não for para pular
+    if (!pularCatalogo) {
+        const sqlCatalog = `
+            SELECT no_exercicio, tx_url, qt_calorias, no_musculo
+            FROM campeonato.exercicios_academia
+            WHERE UPPER(no_treino) = UPPER(:v_nome)
+            ORDER BY no_exercicio
+        `;
+        const resCatalog = await conn.execute(sqlCatalog, { v_nome: nome });
+
+        if (resCatalog.rows.length > 0) {
+            for (let i = 0; i < resCatalog.rows.length; i++) {
+                const row = resCatalog.rows[i];
+                const sqlInsertEx = `
+                    INSERT INTO campeonato.exercicios (id_treino, id_exercicio, no_exercicio, tx_url, nr_ordem, qt_calorias, no_musculo)
+                    VALUES (:v_treino, :v_id_ex, :v_nome, :v_url, :v_ordem, :v_calorias, :v_musculo)
+                `;
+                await conn.execute(sqlInsertEx, {
+                    v_treino: novoId,
+                    v_id_ex: i + 1,
+                    v_nome: row[0],
+                    v_url: row[1],
+                    v_ordem: i + 1,
+                    v_calorias: row[2],
+                    v_musculo: row[3]
+                });
+            }
+        }
+    }
+
+    // O commit deve ser feito pelo controller ou usando autoCommit na última instrução se não houver exercícios
+    // Para manter compatibilidade com o que estava antes (autoCommit: true), vamos dar o commit aqui
+    await conn.commit();
 
     return novoId;
 }
@@ -74,7 +110,7 @@ async function clonarParaAluno(conn, idTreinoOrigem, idUsuarioDestino) {
     const duplicado = await verificarNomeDuplicado(conn, idUsuarioDestino, nomeTreino);
     if (duplicado) return { duplicado: true, nomeTreino };
 
-    const novoIdTreino = await criar(conn, idUsuarioDestino, nomeTreino);
+    const novoIdTreino = await criar(conn, idUsuarioDestino, nomeTreino, true);
 
     const sqlExercicios = `
         SELECT no_exercicio, tx_url, qt_series, nr_peso, qt_repeticao, nr_ordem, qt_calorias, no_musculo

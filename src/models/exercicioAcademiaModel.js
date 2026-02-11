@@ -46,14 +46,19 @@ async function excluir(conn, id) {
     return await conn.execute(sql, { v_id: id }, { autoCommit: true });
 }
 
-async function listarTreinosDistinct(conn) {
+async function listarTreinosDistinct(conn, idUsuario) {
     const sql = `
-        SELECT DISTINCT(no_treino)
+        SELECT DISTINCT(UPPER(no_treino))
         FROM campeonato.exercicios_academia
         WHERE no_treino IS NOT NULL
-        ORDER BY no_treino
+        AND UPPER(no_treino) NOT IN (
+            SELECT UPPER(no_treino)
+            FROM campeonato.treinos
+            WHERE id_usuario = :v_id_usuario
+        )
+        ORDER BY UPPER(no_treino)
     `;
-    return await conn.execute(sql);
+    return await conn.execute(sql, { v_id_usuario: idUsuario });
 }
 
 async function listarPorTreino(conn, noTreino) {

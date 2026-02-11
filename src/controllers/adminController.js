@@ -96,7 +96,10 @@ async function listarTreinosDistinct(req, res) {
     let connection;
     try {
         connection = await getConnection();
-        const result = await exercicioAcademiaModel.listarTreinosDistinct(connection);
+        // Se vier id_usuario na query, usa ele (caso do treinador vendo aluno), senao usa o da sessao
+        const idUsuario = req.query.id_usuario ? Number(req.query.id_usuario) : req.session.usuario.id_usuario;
+
+        const result = await exercicioAcademiaModel.listarTreinosDistinct(connection, idUsuario);
         const treinos = result.rows.map(row => row[0]);
         res.json({ success: true, treinos });
     } catch (err) {
