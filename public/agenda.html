@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/favicon.png?v=2">
+    <title>Agenda</title>
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container-fluid">
+            <span class="navbar-brand">Sistema de Treinos</span>
+            <div>
+                <a id="btnAlunos" href="/alunos.html" class="btn btn-outline-light btn-sm me-2 d-none"><i class="bi bi-people"></i> Alunos</a>
+                <a id="btnAgenda" href="/agenda.html" class="btn btn-outline-light btn-sm me-2 active"><i class="bi bi-calendar-week"></i> Agenda</a>
+                <a id="btnAdmin" href="/admin.html" class="btn btn-outline-warning btn-sm me-2 d-none" title="Admin"><i class="bi bi-gear"></i> Admin</a>
+                <a href="/conta.html" class="btn btn-outline-light btn-sm me-2" title="Minha Conta"><i class="bi bi-person-circle"></i></a>
+                <button id="btnSair" class="btn btn-outline-light btn-sm">Sair</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <!-- Badge gerenciando aluno -->
+        <div id="badgeGerenciando" class="alert alert-info d-flex justify-content-between align-items-center d-none mb-3">
+            <span><i class="bi bi-person"></i> Gerenciando: <strong id="nomeAlunoGerenciado"></strong></span>
+            <a id="btnVoltarAlunos" href="/alunos.html" class="btn btn-sm btn-outline-primary"><i class="bi bi-arrow-left"></i> Voltar para alunos</a>
+        </div>
+
+        <div class="text-center mb-4">
+            <button id="btnNovaAgenda" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#modalAgenda"><i class="bi bi-plus-lg"></i> Nova Agenda</button>
+        </div>
+
+        <div id="alertAgenda" class="alert d-none mt-3"></div>
+
+        <div id="tabelaContainer" class="d-none">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Data</th>
+                            <th>Treino</th>
+                            <th class="d-none d-md-table-cell">Observacao</th>
+                            <th style="width: 160px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaAgenda">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Nova/Editar Agenda -->
+    <div class="modal fade" id="modalAgenda" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tituloModalAgenda">Nova Agenda</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="alertModal" class="alert d-none"></div>
+                    <input type="hidden" id="editIdAgenda">
+                    <div class="mb-3">
+                        <label class="form-label">Data</label>
+                        <input type="date" id="agendaData" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Treino</label>
+                        <select id="agendaTreino" class="form-select" required>
+                            <option value="">-- Selecione --</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Observacao</label>
+                        <textarea id="agendaObs" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" id="btnSalvarAgenda" class="btn btn-success">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Clonar -->
+    <div class="modal fade" id="modalClonar" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Clonar Agendamento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="alertClonar" class="alert d-none"></div>
+                    <input type="hidden" id="clonarIdAgenda">
+                    <div class="mb-3">
+                        <label class="form-label">Nova Data</label>
+                        <input type="date" id="clonarData" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" id="btnConfirmarClonar" class="btn btn-primary">Clonar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Repetir -->
+    <div class="modal fade" id="modalRepetir" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Repetir Agendamento (Semanal)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="alertRepetir" class="alert d-none"></div>
+                    <input type="hidden" id="repetirIdAgenda">
+                    <div class="mb-3">
+                        <label class="form-label">Data Inicio</label>
+                        <input type="date" id="repetirData" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Quantidade de Repeticoes (a cada 7 dias)</label>
+                        <input type="number" id="repetirQtd" class="form-control" min="1" max="52" value="4" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" id="btnConfirmarRepetir" class="btn btn-primary">Repetir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/lib/jquery/jquery-3.6.0.min.js"></script>
+    <script src="/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script>
+        lerParametrosUrl();
+
+        if (gerenciandoOutro()) {
+            $('#nomeAlunoGerenciado').text(nomeUsuarioSelecionado);
+            $('#badgeGerenciando').removeClass('d-none');
+            // Atualizar link da agenda para manter parametros do aluno
+            $('#btnAgenda').attr('href', '/agenda.html?id_usuario=' + idUsuarioSelecionado + '&nome=' + encodeURIComponent(nomeUsuarioSelecionado));
+        }
+
+        function formatarData(dtStr) {
+            if (!dtStr) return '';
+            var partes = dtStr.split('-');
+            return partes[2] + '/' + partes[1] + '/' + partes[0];
+        }
+
+        function carregarTreinos() {
+            $.ajax({
+                url: '/treinos' + getQueryParam(),
+                type: 'GET',
+                success: function(response) {
+                    var sel = $('#agendaTreino');
+                    sel.html('<option value="">-- Selecione --</option>');
+                    response.treinos.forEach(function(t) {
+                        sel.append('<option value="' + t.id_treino + '">' + t.no_treino + '</option>');
+                    });
+                }
+            });
+        }
+
+        function listarAgenda() {
+            $.ajax({
+                url: '/agenda' + getQueryParam(),
+                type: 'GET',
+                success: function(response) {
+                    var tbody = $('#tabelaAgenda');
+                    tbody.empty();
+                    if (response.agendas.length === 0) {
+                        $('#alertAgenda').removeClass('d-none alert-danger').addClass('alert-info').text('Nenhum agendamento encontrado.');
+                        $('#tabelaContainer').addClass('d-none');
+                        return;
+                    }
+                    $('#alertAgenda').addClass('d-none');
+                    response.agendas.forEach(function(ag) {
+                        var hoje = new Date().toISOString().split('T')[0];
+                        var classeData = ag.dt_treino < hoje ? 'text-muted' : (ag.dt_treino === hoje ? 'fw-bold text-success' : '');
+                        tbody.append(
+                            '<tr data-id="' + ag.id_agenda + '" data-treino="' + ag.id_treino + '" data-data="' + ag.dt_treino + '" data-obs="' + (ag.tx_observacao || '').replace(/"/g, '&quot;') + '">' +
+                            '<td class="' + classeData + '">' + formatarData(ag.dt_treino) + '</td>' +
+                            '<td>' + (ag.no_treino || '-') + '</td>' +
+                            '<td class="d-none d-md-table-cell">' + (ag.tx_observacao || '-') + '</td>' +
+                            '<td class="text-center text-nowrap">' +
+                            '<button class="btn btn-sm btn-outline-primary btn-editar me-1" title="Editar"><i class="bi bi-pencil-square"></i></button>' +
+                            '<button class="btn btn-sm btn-outline-info btn-clonar me-1" title="Clonar"><i class="bi bi-copy"></i></button>' +
+                            '<button class="btn btn-sm btn-outline-warning btn-repetir me-1" title="Repetir semanal"><i class="bi bi-arrow-repeat"></i></button>' +
+                            '<button class="btn btn-sm btn-outline-danger btn-excluir" title="Excluir"><i class="bi bi-trash"></i></button>' +
+                            '</td>' +
+                            '</tr>'
+                        );
+                    });
+                    $('#tabelaContainer').removeClass('d-none');
+                },
+                error: function(xhr) {
+                    if (xhr.status === 401) { window.location.href = '/index.html'; return; }
+                    var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao buscar agenda";
+                    $('#alertAgenda').removeClass('d-none alert-info').addClass('alert-danger').text(msg);
+                }
+            });
+        }
+
+        // Abrir modal para nova agenda
+        document.getElementById('modalAgenda').addEventListener('show.bs.modal', function() {
+            carregarTreinos();
+        });
+
+        $('#btnNovaAgenda').on('click', function() {
+            $('#tituloModalAgenda').text('Nova Agenda');
+            $('#editIdAgenda').val('');
+            $('#agendaData').val('');
+            $('#agendaTreino').val('');
+            $('#agendaObs').val('');
+            $('#alertModal').addClass('d-none');
+        });
+
+        // Salvar (criar ou editar)
+        $('#btnSalvarAgenda').on('click', function() {
+            var idAgenda = $('#editIdAgenda').val();
+            var dados = {
+                id_treino: Number($('#agendaTreino').val()),
+                dt_treino: $('#agendaData').val(),
+                tx_observacao: $('#agendaObs').val().trim()
+            };
+            if (!dados.id_treino || !dados.dt_treino) {
+                $('#alertModal').removeClass('d-none alert-success').addClass('alert-danger').text('Informe treino e data.');
+                return;
+            }
+            var url = idAgenda ? '/agenda/' + idAgenda + getQueryParam() : '/agenda' + getQueryParam();
+            var method = idAgenda ? 'PUT' : 'POST';
+            $.ajax({
+                url: url,
+                type: method,
+                contentType: 'application/json',
+                data: JSON.stringify(dados),
+                success: function(response) {
+                    $('#alertModal').removeClass('d-none alert-danger').addClass('alert-success').text(response.message);
+                    setTimeout(function() {
+                        bootstrap.Modal.getInstance(document.getElementById('modalAgenda')).hide();
+                        $('#alertModal').addClass('d-none');
+                        listarAgenda();
+                    }, 800);
+                },
+                error: function(xhr) {
+                    if (xhr.status === 401) { window.location.href = '/index.html'; return; }
+                    var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao salvar agendamento";
+                    $('#alertModal').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
+                }
+            });
+        });
+
+        // Editar
+        $(document).on('click', '.btn-editar', function() {
+            var row = $(this).closest('tr');
+            $('#tituloModalAgenda').text('Editar Agenda');
+            $('#editIdAgenda').val(row.data('id'));
+            $('#agendaData').val(row.data('data'));
+            $('#agendaObs').val(row.data('obs'));
+            $('#alertModal').addClass('d-none');
+            carregarTreinos();
+            setTimeout(function() {
+                $('#agendaTreino').val(row.data('treino'));
+            }, 300);
+            new bootstrap.Modal(document.getElementById('modalAgenda')).show();
+        });
+
+        // Excluir
+        $(document).on('click', '.btn-excluir', function() {
+            var row = $(this).closest('tr');
+            var idAgenda = row.data('id');
+            if (!confirm('Excluir este agendamento?')) return;
+            $.ajax({
+                url: '/agenda/' + idAgenda + getQueryParam(),
+                type: 'DELETE',
+                success: function() {
+                    listarAgenda();
+                },
+                error: function(xhr) {
+                    if (xhr.status === 401) { window.location.href = '/index.html'; return; }
+                    var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao excluir agendamento";
+                    alert(msg);
+                }
+            });
+        });
+
+        // Clonar
+        $(document).on('click', '.btn-clonar', function() {
+            var row = $(this).closest('tr');
+            $('#clonarIdAgenda').val(row.data('id'));
+            $('#clonarData').val('');
+            $('#alertClonar').addClass('d-none');
+            new bootstrap.Modal(document.getElementById('modalClonar')).show();
+        });
+
+        $('#btnConfirmarClonar').on('click', function() {
+            var idAgenda = $('#clonarIdAgenda').val();
+            var novaData = $('#clonarData').val();
+            if (!novaData) {
+                $('#alertClonar').removeClass('d-none alert-success').addClass('alert-danger').text('Informe a nova data.');
+                return;
+            }
+            $.ajax({
+                url: '/agenda/' + idAgenda + '/clonar' + getQueryParam(),
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ dt_treino: novaData }),
+                success: function(response) {
+                    $('#alertClonar').removeClass('d-none alert-danger').addClass('alert-success').text(response.message);
+                    setTimeout(function() {
+                        bootstrap.Modal.getInstance(document.getElementById('modalClonar')).hide();
+                        listarAgenda();
+                    }, 800);
+                },
+                error: function(xhr) {
+                    if (xhr.status === 401) { window.location.href = '/index.html'; return; }
+                    var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao clonar agendamento";
+                    $('#alertClonar').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
+                }
+            });
+        });
+
+        // Repetir
+        $(document).on('click', '.btn-repetir', function() {
+            var row = $(this).closest('tr');
+            $('#repetirIdAgenda').val(row.data('id'));
+            $('#repetirData').val('');
+            $('#repetirQtd').val(4);
+            $('#alertRepetir').addClass('d-none');
+            new bootstrap.Modal(document.getElementById('modalRepetir')).show();
+        });
+
+        $('#btnConfirmarRepetir').on('click', function() {
+            var idAgenda = $('#repetirIdAgenda').val();
+            var dataInicio = $('#repetirData').val();
+            var qtd = Number($('#repetirQtd').val());
+            if (!dataInicio || !qtd || qtd < 1) {
+                $('#alertRepetir').removeClass('d-none alert-success').addClass('alert-danger').text('Informe data e quantidade.');
+                return;
+            }
+            $.ajax({
+                url: '/agenda/' + idAgenda + '/repetir' + getQueryParam(),
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ dt_treino: dataInicio, qt_repeticoes: qtd }),
+                success: function(response) {
+                    $('#alertRepetir').removeClass('d-none alert-danger').addClass('alert-success').text(response.message);
+                    setTimeout(function() {
+                        bootstrap.Modal.getInstance(document.getElementById('modalRepetir')).hide();
+                        listarAgenda();
+                    }, 800);
+                },
+                error: function(xhr) {
+                    if (xhr.status === 401) { window.location.href = '/index.html'; return; }
+                    var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao repetir agendamento";
+                    $('#alertRepetir').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
+                }
+            });
+        });
+
+        // Inicializar
+        $(document).ready(function() {
+            inicializar(function() {
+                listarAgenda();
+            });
+        });
+    </script>
+</body>
+</html>

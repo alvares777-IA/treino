@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="icon" type="image/png" href="/favicon.png?v=2">
+    <title>Login - Sistema de Treinos</title>
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body { background: #f4f7f6; display: flex; align-items: center; min-height: 100vh; }
+        .login-card { width: 100%; max-width: 420px; padding: 15px; margin: auto; }
+        .divider { display: flex; align-items: center; margin: 20px 0; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #dee2e6; }
+        .divider span { padding: 0 12px; color: #6c757d; font-size: 0.9rem; }
+        .btn-google { background: #fff; border: 1px solid #dadce0; color: #3c4043; }
+        .btn-google:hover { background: #f8f9fa; border-color: #dadce0; color: #3c4043; }
+        .btn-facebook { background: #1877f2; border-color: #1877f2; color: #fff; }
+        .btn-facebook:hover { background: #166fe5; border-color: #166fe5; color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="login-card card shadow">
+        <div class="card-body">
+            <h3 class="text-center mb-4">Acesso ao Sistema</h3>
+            <div id="alert" class="alert d-none"></div>
+            <form id="loginForm">
+                <div class="mb-3">
+                    <label class="form-label">E-mail</label>
+                    <input type="email" id="usuario" class="form-control" required placeholder="seu@email.com">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Senha</label>
+                    <div class="input-group">
+                        <input type="password" id="senha" class="form-control" required>
+                        <button type="button" id="btnMostrarSenha" class="btn btn-outline-secondary" tabindex="-1"><i class="bi bi-eye"></i></button>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Entrar</button>
+            </form>
+            <div class="text-center mt-2">
+                <a href="#" data-bs-toggle="modal" data-bs-target="#modalEsqueceuSenha">Esqueceu a senha?</a>
+            </div>
+
+            <div class="divider"><span>ou</span></div>
+
+            <div class="d-grid gap-2">
+                <button type="button" id="btnGoogle" class="btn btn-google">
+                    <svg width="18" height="18" viewBox="0 0 48 48" class="me-2" style="vertical-align: text-bottom;">
+                        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                    </svg>
+                    Entrar com Google
+                </button>
+                <button type="button" id="btnFacebook" class="btn btn-facebook">
+                    <i class="bi bi-facebook me-2"></i>Entrar com Facebook
+                </button>
+            </div>
+
+            <div class="text-center mt-3">
+                <span class="text-muted">Nao tem conta?</span>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#modalCadastro">Criar conta</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Esqueceu a Senha -->
+    <div class="modal fade" id="modalEsqueceuSenha" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Recuperar Senha</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="alertEsqueceu" class="alert d-none"></div>
+                    <p class="text-muted">Informe seu e-mail. Se houver um cadastro, enviaremos uma nova senha.</p>
+                    <div class="mb-3">
+                        <label class="form-label">E-mail</label>
+                        <input type="email" id="esqueceuLogin" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" id="btnEnviarEsqueceu" class="btn btn-primary">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Cadastro -->
+    <div class="modal fade" id="modalCadastro" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Criar Conta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="alertCadastro" class="alert d-none"></div>
+                    <form id="cadastroForm">
+                        <div class="mb-3">
+                            <label class="form-label">Nome completo</label>
+                            <input type="text" id="cadNome" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">E-mail</label>
+                            <input type="email" id="cadEmail" class="form-control" required placeholder="seu@email.com">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Senha</label>
+                            <input type="password" id="cadSenha" class="form-control" required minlength="6">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Confirmar Senha</label>
+                            <input type="password" id="cadSenhaConfirm" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label d-block">Tipo de conta</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="cadTipo" id="cadTipoUSU" value="USU" checked>
+                                <label class="form-check-label" for="cadTipoUSU">Aluno</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="cadTipo" id="cadTipoTRE" value="TRE">
+                                <label class="form-check-label" for="cadTipoTRE">Treinador</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" id="btnCadastrar" class="btn btn-primary">Cadastrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/lib/jquery/jquery-3.6.0.min.js"></script>
+    <script src="/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+        var ajaxAtivo = 0;
+        $.ajaxSetup({
+            beforeSend: function() {
+                ajaxAtivo++;
+                $('button, .btn').prop('disabled', true);
+            },
+            complete: function() {
+                ajaxAtivo--;
+                if (ajaxAtivo <= 0) {
+                    ajaxAtivo = 0;
+                    $('button, .btn').prop('disabled', false);
+                }
+            }
+        });
+
+        var socialConfig = { googleClientId: '', facebookAppId: '' };
+
+        $.get('/config-social', function(data) {
+            socialConfig = data;
+            initGoogle();
+            initFacebook();
+        });
+
+        function initGoogle() {
+            if (!socialConfig.googleClientId || typeof google === 'undefined') return;
+            google.accounts.id.initialize({
+                client_id: socialConfig.googleClientId,
+                callback: handleGoogleResponse
+            });
+        }
+
+        function handleGoogleResponse(response) {
+            $.ajax({
+                url: '/login-google',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ credential: response.credential }),
+                success: function(res) {
+                    $('#alert').removeClass('d-none alert-danger').addClass('alert-success').text(res.message);
+                    setTimeout(function() { window.location.href = '/treinos.html'; }, 500);
+                },
+                error: function(xhr) {
+                    var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao conectar com Google";
+                    $('#alert').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
+                }
+            });
+        }
+
+        $('#btnGoogle').on('click', function() {
+            if (!socialConfig.googleClientId || typeof google === 'undefined') {
+                $('#alert').removeClass('d-none alert-success').addClass('alert-danger').text('Login com Google nao configurado.');
+                return;
+            }
+            // Garantir inicializacao (pode nao ter ocorrido se o script carregou apos initGoogle)
+            google.accounts.id.initialize({
+                client_id: socialConfig.googleClientId,
+                callback: handleGoogleResponse
+            });
+            google.accounts.id.prompt();
+        });
+
+        function initFacebook() {
+            if (!socialConfig.facebookAppId) return;
+            window.fbAsyncInit = function() {
+                FB.init({
+                    appId: socialConfig.facebookAppId,
+                    cookie: true,
+                    xfbml: false,
+                    version: 'v18.0'
+                });
+            };
+            (function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js = d.createElement(s); js.id = id;
+                js.src = "https://connect.facebook.net/pt_BR/sdk.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+        }
+
+        $('#btnFacebook').on('click', function() {
+            if (typeof FB === 'undefined') {
+                $('#alert').removeClass('d-none alert-success').addClass('alert-danger').text('Login com Facebook nao configurado.');
+                return;
+            }
+            FB.login(function(response) {
+                if (response.authResponse) {
+                    $.ajax({
+                        url: '/login-facebook',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ accessToken: response.authResponse.accessToken }),
+                        success: function(res) {
+                            $('#alert').removeClass('d-none alert-danger').addClass('alert-success').text(res.message);
+                            setTimeout(function() { window.location.href = '/treinos.html'; }, 500);
+                        },
+                        error: function(xhr) {
+                            var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao conectar com Facebook";
+                            $('#alert').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
+                        }
+                    });
+                }
+            }, { scope: 'email' });
+        });
+
+        $('#loginForm').on('submit', function(e) {
+            e.preventDefault();
+            var data = {
+                usuario: $('#usuario').val(),
+                senha: $('#senha').val()
+            };
+
+            $.ajax({
+                url: '/login',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function(response) {
+                    $('#alert').removeClass('d-none alert-danger').addClass('alert-success').text(response.message);
+                    setTimeout(function() {
+                        if (response.senha_temporaria) {
+                            window.location.href = '/conta.html?trocar_senha=1';
+                        } else {
+                            window.location.href = '/treinos.html';
+                        }
+                    }, 500);
+                },
+                error: function(xhr) {
+                    var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao conectar";
+                    $('#alert').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
+                }
+            });
+        });
+
+        $('#btnMostrarSenha').on('click', function() {
+            var input = $('#senha');
+            var icon = $(this).find('i');
+            if (input.attr('type') === 'password') {
+                input.attr('type', 'text');
+                icon.removeClass('bi-eye').addClass('bi-eye-slash');
+            } else {
+                input.attr('type', 'password');
+                icon.removeClass('bi-eye-slash').addClass('bi-eye');
+            }
+        });
+
+        $('#btnEnviarEsqueceu').on('click', function() {
+            var login = $('#esqueceuLogin').val().trim();
+            if (!login) {
+                $('#alertEsqueceu').removeClass('d-none alert-success').addClass('alert-danger').text('Informe o e-mail.');
+                return;
+            }
+            $.ajax({
+                url: '/esqueceu-senha',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ no_login: login }),
+                success: function(response) {
+                    $('#alertEsqueceu').removeClass('d-none alert-danger').addClass('alert-success').text(response.message);
+                    setTimeout(function() {
+                        $('#alertEsqueceu').addClass('d-none');
+                        $('#esqueceuLogin').val('');
+                        bootstrap.Modal.getInstance(document.getElementById('modalEsqueceuSenha')).hide();
+                    }, 3000);
+                },
+                error: function() {
+                    $('#alertEsqueceu').removeClass('d-none alert-success').addClass('alert-danger').text('Erro ao processar. Tente novamente.');
+                }
+            });
+        });
+
+        $('#btnCadastrar').on('click', function() {
+            var nome = $('#cadNome').val().trim();
+            var email = $('#cadEmail').val().trim();
+            var senha = $('#cadSenha').val();
+            var senhaConfirm = $('#cadSenhaConfirm').val();
+            var tipo = $('input[name="cadTipo"]:checked').val();
+
+            if (!nome || !email || !senha) {
+                $('#alertCadastro').removeClass('d-none alert-success').addClass('alert-danger').text('Preencha todos os campos obrigatorios.');
+                return;
+            }
+            if (senha.length < 6) {
+                $('#alertCadastro').removeClass('d-none alert-success').addClass('alert-danger').text('A senha deve ter pelo menos 6 caracteres.');
+                return;
+            }
+            if (senha !== senhaConfirm) {
+                $('#alertCadastro').removeClass('d-none alert-success').addClass('alert-danger').text('As senhas nao conferem.');
+                return;
+            }
+
+            $.ajax({
+                url: '/cadastrar',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ no_usuario: nome, tx_email: email, no_senha: senha, ao_tipo: tipo }),
+                success: function(res) {
+                    $('#alertCadastro').removeClass('d-none alert-danger').addClass('alert-success').text(res.message);
+                    setTimeout(function() { window.location.href = '/treinos.html'; }, 500);
+                },
+                error: function(xhr) {
+                    var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao cadastrar.";
+                    $('#alertCadastro').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

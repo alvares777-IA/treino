@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/favicon.png?v=2">
+    <title>Minha Conta</title>
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container-fluid">
+            <span class="navbar-brand">Sistema de Treinos</span>
+            <div>
+                <a id="btnAlunos" href="/alunos.html" class="btn btn-outline-light btn-sm me-2 d-none"><i class="bi bi-people"></i> Alunos</a>
+                <a id="btnAgenda" href="/agenda.html" class="btn btn-outline-light btn-sm me-2"><i class="bi bi-calendar-week"></i> Agenda</a>
+                <a id="btnAdmin" href="/admin.html" class="btn btn-outline-warning btn-sm me-2 d-none" title="Admin"><i class="bi bi-gear"></i> Admin</a>
+                <a href="/conta.html" class="btn btn-outline-light btn-sm me-2 active" title="Minha Conta"><i class="bi bi-person-circle"></i></a>
+                <button id="btnSair" class="btn btn-outline-light btn-sm">Sair</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="max-width: 600px;">
+        <h5 class="mb-3"><i class="bi bi-person-circle"></i> Minha Conta</h5>
+        <div id="alertConta" class="alert d-none"></div>
+
+        <div class="mb-3">
+            <label class="form-label">Login</label>
+            <input type="text" id="contaLogin" class="form-control" disabled>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">E-mail</label>
+            <input type="email" id="contaEmail" class="form-control" placeholder="seu@email.com">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Nome</label>
+            <input type="text" id="contaNome" class="form-control" required>
+        </div>
+        <div class="row mb-3">
+            <div class="col-4">
+                <label class="form-label">Peso (kg)</label>
+                <input type="number" id="contaPeso" class="form-control" step="0.1" min="0">
+            </div>
+            <div class="col-4">
+                <label class="form-label">Altura (cm)</label>
+                <input type="number" id="contaAltura" class="form-control" step="0.1" min="0">
+            </div>
+            <div class="col-4">
+                <label class="form-label">Meta Peso (kg)</label>
+                <input type="number" id="contaPesoMeta" class="form-control" step="0.1" min="0">
+            </div>
+        </div>
+        <div class="mb-3">
+            <button type="button" id="btnRegistrarMedidas" class="btn btn-outline-success btn-sm"><i class="bi bi-clipboard-pulse"></i> Registrar Medidas</button>
+        </div>
+        <div id="divHistoricoMedidas" class="mb-3 d-none">
+            <h6 class="mb-2">Historico de Medidas</h6>
+            <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+                <table class="table table-sm table-striped">
+                    <thead><tr><th>Data</th><th>Peso</th><th>Altura</th><th>Meta</th></tr></thead>
+                    <tbody id="tabelaMedidas"></tbody>
+                </table>
+            </div>
+        </div>
+        <hr>
+        <div id="avisoSenhaTemp" class="alert alert-warning d-none">Voce esta usando uma senha temporaria. Por favor, defina uma nova senha.</div>
+        <p id="dicaSenha" class="text-muted mb-2">Deixe os campos de senha em branco para manter a senha atual.</p>
+        <div class="mb-3" id="divSenhaAtual">
+            <label class="form-label">Senha Atual</label>
+            <input type="password" id="contaSenhaAtual" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Nova Senha</label>
+            <input type="password" id="contaSenhaNova" class="form-control">
+        </div>
+        <hr>
+        <!-- Secao Meu Treinador (para USU) -->
+        <div id="secaoMeuTreinador" class="d-none">
+            <h6>Meu Treinador</h6>
+            <div id="treinadorAtual" class="d-none mb-2">
+                <p class="mb-1">Treinador: <strong id="nomeTreinadorAtual"></strong></p>
+                <p class="text-muted mb-0"><small id="emailTreinadorAtual"></small></p>
+                <button id="btnAbandonarTreinador" class="btn btn-sm btn-outline-danger mt-2"><i class="bi bi-person-x"></i> Desvincular</button>
+            </div>
+            <div id="semTreinador" class="d-none mb-2">
+                <p class="text-muted">Voce nao possui treinador vinculado.</p>
+                <div class="input-group">
+                    <input type="email" id="emailSolicitarTreinador" class="form-control" placeholder="E-mail do treinador">
+                    <button id="btnSolicitarTreinador" class="btn btn-outline-primary">Solicitar</button>
+                </div>
+                <div id="alertSolicitacao" class="alert d-none mt-2"></div>
+            </div>
+        </div>
+        <!-- Info para TRE -->
+        <div id="secaoInfoTreinador" class="d-none">
+            <p class="text-muted"><i class="bi bi-mortarboard"></i> Voce e um treinador.</p>
+        </div>
+
+        <div class="d-flex justify-content-between mt-4 mb-4">
+            <a href="#" id="btnVoltar" class="btn btn-secondary">Voltar</a>
+            <button type="button" id="btnSalvarConta" class="btn btn-primary">Salvar</button>
+        </div>
+    </div>
+
+    <script src="/lib/jquery/jquery-3.6.0.min.js"></script>
+    <script src="/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script>
+        var trocarSenhaObrigatorio = new URLSearchParams(window.location.search).get('trocar_senha') === '1';
+
+        function carregarDadosConta() {
+            if (trocarSenhaObrigatorio) {
+                $('#divSenhaAtual').addClass('d-none');
+                $('#dicaSenha').addClass('d-none');
+                $('#avisoSenhaTemp').removeClass('d-none');
+            }
+            $.ajax({
+                url: '/usuario',
+                type: 'GET',
+                success: function(response) {
+                    $('#contaLogin').val(response.no_login);
+                    $('#contaEmail').val(response.tx_email || '');
+                    $('#contaNome').val(response.no_usuario);
+                    $('#contaPeso').val(response.nr_peso || '');
+                    $('#contaAltura').val(response.nr_altura || '');
+                    $('#contaPesoMeta').val(response.nr_pesometa || '');
+                    carregarHistoricoMedidas();
+
+                    var tipo = response.ao_tipo || 'USU';
+                    if (tipo === 'ADM') {
+                        $('#secaoMeuTreinador').addClass('d-none');
+                        $('#secaoInfoTreinador').removeClass('d-none');
+                    } else {
+                        if (tipo === 'TRE') {
+                            $('#secaoInfoTreinador').removeClass('d-none');
+                        } else {
+                            $('#secaoInfoTreinador').addClass('d-none');
+                        }
+                        $('#secaoMeuTreinador').removeClass('d-none');
+                        carregarMeuTreinador();
+                    }
+
+                    if (trocarSenhaObrigatorio) {
+                        $('#contaSenhaNova').focus();
+                    }
+                },
+                error: function(xhr) {
+                    if (xhr.status === 401) { window.location.href = '/index.html'; return; }
+                    $('#alertConta').removeClass('d-none alert-success').addClass('alert-danger').text('Erro ao carregar dados da conta.');
+                }
+            });
+        }
+
+        function carregarMeuTreinador() {
+            $.ajax({
+                url: '/meu-treinador',
+                type: 'GET',
+                success: function(response) {
+                    if (response.treinador) {
+                        $('#treinadorAtual').removeClass('d-none');
+                        $('#semTreinador').addClass('d-none');
+                        $('#nomeTreinadorAtual').text(response.treinador.no_usuario);
+                        $('#emailTreinadorAtual').text(response.treinador.tx_email || '');
+                    } else {
+                        $('#treinadorAtual').addClass('d-none');
+                        $('#semTreinador').removeClass('d-none');
+                    }
+                }
+            });
+        }
+
+        function carregarHistoricoMedidas() {
+            $.ajax({
+                url: '/usuario/medidas',
+                type: 'GET',
+                success: function(response) {
+                    var tbody = $('#tabelaMedidas');
+                    tbody.empty();
+                    if (response.medidas.length === 0) {
+                        $('#divHistoricoMedidas').addClass('d-none');
+                        return;
+                    }
+                    $('#divHistoricoMedidas').removeClass('d-none');
+                    response.medidas.forEach(function(m) {
+                        tbody.append(
+                            '<tr>' +
+                            '<td>' + m.dt_medida + '</td>' +
+                            '<td>' + (m.nr_peso || '-') + '</td>' +
+                            '<td>' + (m.nr_altura || '-') + '</td>' +
+                            '<td>' + (m.nr_pesometa || '-') + '</td>' +
+                            '</tr>'
+                        );
+                    });
+                }
+            });
+        }
+
+        // Registrar medidas
+        $('#btnRegistrarMedidas').on('click', function() {
+            var dados = {
+                nr_peso: $('#contaPeso').val() || null,
+                nr_altura: $('#contaAltura').val() || null,
+                nr_pesometa: $('#contaPesoMeta').val() || null
+            };
+            $.ajax({
+                url: '/usuario/medidas',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(dados),
+                success: function(response) {
+                    $('#alertConta').removeClass('d-none alert-danger').addClass('alert-success').text(response.message);
+                    setTimeout(function() { $('#alertConta').addClass('d-none'); }, 2000);
+                    carregarHistoricoMedidas();
+                },
+                error: function(xhr) {
+                    var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao registrar medida";
+                    $('#alertConta').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
+                }
+            });
+        });
+
+        // Salvar conta
+        $('#btnSalvarConta').on('click', function() {
+            var nome = $('#contaNome').val().trim();
+            if (!nome) {
+                $('#alertConta').removeClass('d-none alert-success').addClass('alert-danger').text('Informe o nome.');
+                return;
+            }
+            if (trocarSenhaObrigatorio && !$('#contaSenhaNova').val().trim()) {
+                $('#alertConta').removeClass('d-none alert-success').addClass('alert-danger').text('Informe a nova senha.');
+                return;
+            }
+            var dados = {
+                no_usuario: nome,
+                tx_email: $('#contaEmail').val().trim(),
+                no_senha_atual: $('#contaSenhaAtual').val(),
+                no_senha_nova: $('#contaSenhaNova').val(),
+                nr_peso: $('#contaPeso').val() || null,
+                nr_altura: $('#contaAltura').val() || null,
+                nr_pesometa: $('#contaPesoMeta').val() || null
+            };
+            $.ajax({
+                url: '/usuario',
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(dados),
+                success: function(response) {
+                    $('#alertConta').removeClass('d-none alert-danger').addClass('alert-success').text(response.message);
+                    $('#contaSenhaAtual').val('');
+                    $('#contaSenhaNova').val('');
+                    if (trocarSenhaObrigatorio) {
+                        trocarSenhaObrigatorio = false;
+                        window.history.replaceState({}, '', '/conta.html');
+                        $('#divSenhaAtual').removeClass('d-none');
+                        $('#dicaSenha').removeClass('d-none');
+                        $('#avisoSenhaTemp').addClass('d-none');
+                    }
+                },
+                error: function(xhr) {
+                    if (xhr.status === 401) { window.location.href = '/index.html'; return; }
+                    var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao atualizar conta";
+                    $('#alertConta').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
+                }
+            });
+        });
+
+        // Abandonar treinador
+        $('#btnAbandonarTreinador').on('click', function() {
+            var nome = $('#nomeTreinadorAtual').text();
+            if (!confirm('Abandonar treinador "' + nome + '"?')) return;
+            $.ajax({
+                url: '/meu-treinador',
+                type: 'DELETE',
+                success: function() {
+                    carregarMeuTreinador();
+                },
+                error: function(xhr) {
+                    if (xhr.status === 401) { window.location.href = '/index.html'; return; }
+                    var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao abandonar treinador";
+                    alert(msg);
+                }
+            });
+        });
+
+        // Solicitar treinador
+        $('#btnSolicitarTreinador').on('click', function() {
+            var email = $('#emailSolicitarTreinador').val().trim();
+            if (!email) {
+                $('#alertSolicitacao').removeClass('d-none alert-success').addClass('alert-danger').text('Informe o e-mail do treinador.');
+                return;
+            }
+            $.ajax({
+                url: '/solicitacao-treinador',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ tx_email_treinador: email }),
+                success: function(response) {
+                    $('#alertSolicitacao').removeClass('d-none alert-danger').addClass('alert-success').text(response.message);
+                    $('#emailSolicitarTreinador').val('');
+                },
+                error: function(xhr) {
+                    var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao enviar solicitacao";
+                    $('#alertSolicitacao').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
+                }
+            });
+        });
+
+        // Botao voltar - volta para treinos ou alunos conforme tipo
+        $('#btnVoltar').on('click', function(e) {
+            e.preventDefault();
+            if (tipoUsuario === 'TRE' || tipoUsuario === 'ADM') {
+                window.location.href = '/alunos.html';
+            } else {
+                window.location.href = '/treinos.html';
+            }
+        });
+
+        // Inicializar
+        $(document).ready(function() {
+            inicializar(function() {
+                carregarDadosConta();
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/favicon.png?v=2">
+    <title>Treinos</title>
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .treino-row { cursor: pointer; }
+        .treino-row:hover { background-color: #e9ecef; }
+        .btn-editar, .btn-excluir { padding: 2px 8px; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container-fluid">
+            <span class="navbar-brand">Sistema de Treinos</span>
+            <div>
+                <a id="btnAlunos" href="/alunos.html" class="btn btn-outline-light btn-sm me-2 d-none"><i class="bi bi-people"></i> Alunos</a>
+                <a id="btnAgenda" href="/agenda.html" class="btn btn-outline-light btn-sm me-2"><i class="bi bi-calendar-week"></i> Agenda</a>
+                <a id="btnAdmin" href="/admin.html" class="btn btn-outline-warning btn-sm me-2 d-none" title="Admin"><i class="bi bi-gear"></i> Admin</a>
+                <a href="/conta.html" class="btn btn-outline-light btn-sm me-2" title="Minha Conta"><i class="bi bi-person-circle"></i></a>
+                <button id="btnSair" class="btn btn-outline-light btn-sm">Sair</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <!-- Badge gerenciando aluno -->
+        <div id="badgeGerenciando" class="alert alert-info d-flex justify-content-between align-items-center d-none mb-3">
+            <span><i class="bi bi-person"></i> Gerenciando: <strong id="nomeAlunoGerenciado"></strong></span>
+            <a id="btnVoltarAlunos" href="/alunos.html" class="btn btn-sm btn-outline-primary"><i class="bi bi-arrow-left"></i> Voltar para alunos</a>
+        </div>
+
+        <div id="telaTreinos">
+            <div class="text-center mb-4">
+                <button id="btnListar" class="btn btn-primary btn-lg d-none">Listar Treinos</button>
+                <button id="btnNovo" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#modalNovoTreino">Novo Treino</button>
+                <a id="linkHistorico" href="/historico.html" class="btn btn-info btn-lg"><i class="bi bi-clock-history"></i> Historico</a>
+            </div>
+
+            <!-- Modal Novo Treino -->
+            <div class="modal fade" id="modalNovoTreino" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Novo Treino</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="alertModal" class="alert d-none"></div>
+                            <div class="mb-3">
+                                <label class="form-label">Tipo de Treino (sugestao)</label>
+                                <select id="selectTipoTreino" class="form-select">
+                                    <option value="">-- Selecione ou digite abaixo --</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Nome do Treino</label>
+                                <input type="text" id="noTreino" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" id="btnSalvarTreino" class="btn btn-success">Salvar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Editar Treino + Exercicios -->
+            <div class="modal fade" id="modalEditarTreino" tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Editar Treino</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="alertModalEditar" class="alert d-none"></div>
+                            <input type="hidden" id="editIdTreino">
+                            <div class="mb-3">
+                                <label class="form-label">Nome do Treino</label>
+                                <div class="input-group">
+                                    <input type="text" id="editNoTreino" class="form-control" required>
+                                    <button type="button" id="btnSalvarEdicao" class="btn btn-primary">Salvar Nome</button>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="mb-0">Exercicios</h6>
+                                <button type="button" id="btnNovoExercicio" class="btn btn-success btn-sm"><i class="bi bi-plus-lg"></i> Novo Exercicio</button>
+                            </div>
+                            <!-- Form editar exercicio (oculto) -->
+                            <div id="formEditarExercicio" class="d-none mb-3 border rounded p-3 bg-warning-subtle">
+                                <input type="hidden" id="editIdExercicio">
+                                <div class="mb-2">
+                                    <label class="form-label small text-muted mb-1">Exercicio</label>
+                                    <input type="text" id="editNoExercicio" class="form-control" placeholder="Nome do exercicio">
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-3">
+                                        <label class="form-label small text-muted mb-1">Ordem</label>
+                                        <input type="number" id="editNrOrdem" class="form-control" placeholder="Ordem" min="0">
+                                    </div>
+                                    <div class="col-3">
+                                        <label class="form-label small text-muted mb-1">Series</label>
+                                        <input type="number" id="editQtSeries" class="form-control" placeholder="Series" min="0">
+                                    </div>
+                                    <div class="col-3">
+                                        <label class="form-label small text-muted mb-1">Reps</label>
+                                        <input type="number" id="editQtRepeticao" class="form-control" placeholder="Repeticoes" min="0">
+                                    </div>
+                                    <div class="col-3">
+                                        <label class="form-label small text-muted mb-1">Peso</label>
+                                        <input type="number" id="editNrPeso" class="form-control" placeholder="Peso (kg)" min="0" step="0.5">
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-4">
+                                        <label class="form-label small text-muted mb-1">Calorias</label>
+                                        <input type="number" id="editQtCalorias" class="form-control" placeholder="Calorias" min="0">
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="form-label small text-muted mb-1">Musculo</label>
+                                        <input type="text" id="editNoMusculo" class="form-control" placeholder="Musculo">
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="form-label small text-muted mb-1">Link</label>
+                                        <input type="url" id="editTxUrl" class="form-control" placeholder="Link (YouTube, site, etc.)">
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <button type="button" id="btnCancelarEditExercicio" class="btn btn-secondary btn-sm">Cancelar</button>
+                                    <button type="button" id="btnSalvarEditExercicio" class="btn btn-primary btn-sm">Salvar</button>
+                                </div>
+                            </div>
+                            <!-- Form novo exercicio (oculto) -->
+                            <div id="formNovoExercicio" class="d-none mb-3 border rounded p-3 bg-light">
+                                <div class="mb-2">
+                                    <label class="form-label small text-muted mb-1">Catalogo de exercicios</label>
+                                    <select id="selectExAcademia" class="form-select form-select-sm">
+                                        <option value="">-- Selecione ou digite abaixo --</option>
+                                    </select>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small text-muted mb-1">Exercicio</label>
+                                    <input type="text" id="novoNoExercicio" class="form-control" placeholder="Nome do exercicio">
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-3">
+                                        <label class="form-label small text-muted mb-1">Ordem</label>
+                                        <input type="number" id="novoNrOrdem" class="form-control" placeholder="Ordem" min="0">
+                                    </div>
+                                    <div class="col-3">
+                                        <label class="form-label small text-muted mb-1">Series</label>
+                                        <input type="number" id="novoQtSeries" class="form-control" placeholder="Series" min="0">
+                                    </div>
+                                    <div class="col-3">
+                                        <label class="form-label small text-muted mb-1">Reps</label>
+                                        <input type="number" id="novoQtRepeticao" class="form-control" placeholder="Repeticoes" min="0">
+                                    </div>
+                                    <div class="col-3">
+                                        <label class="form-label small text-muted mb-1">Peso</label>
+                                        <input type="number" id="novoNrPeso" class="form-control" placeholder="Peso (kg)" min="0" step="0.5">
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-4">
+                                        <label class="form-label small text-muted mb-1">Calorias</label>
+                                        <input type="number" id="novoQtCalorias" class="form-control" placeholder="Calorias" min="0">
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="form-label small text-muted mb-1">Musculo</label>
+                                        <input type="text" id="novoNoMusculo" class="form-control" placeholder="Musculo">
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="form-label small text-muted mb-1">Link</label>
+                                        <input type="url" id="novoTxUrl" class="form-control" placeholder="Link (YouTube, site, etc.)">
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <button type="button" id="btnCancelarNovoExercicio" class="btn btn-secondary btn-sm">Cancelar</button>
+                                    <button type="button" id="btnSalvarNovoExercicio" class="btn btn-success btn-sm">Salvar</button>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-sm">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Exercicio</th>
+                                            <th>Ordem</th>
+                                            <th>Series</th>
+                                            <th>Reps</th>
+                                            <th>Peso</th>
+                                            <th>Calorias</th>
+                                            <th>Musculo</th>
+                                            <th>Link</th>
+                                            <th style="width: 100px;"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tabelaExerciciosModal">
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p id="semExercicios" class="text-muted text-center d-none">Nenhum exercicio cadastrado.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Confirmar Exclusao -->
+            <div class="modal fade" id="modalExcluirTreino" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Excluir Treino</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Deseja realmente excluir o treino <strong id="excluirNomeTreino"></strong>?</p>
+                            <input type="hidden" id="excluirIdTreino">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" id="btnConfirmarExclusao" class="btn btn-danger">Excluir</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Atribuir Treino -->
+            <div class="modal fade" id="modalAtribuirTreino" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Atribuir Treino a Aluno</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="alertAtribuir" class="alert d-none"></div>
+                            <p>Treino: <strong id="atribuirNomeTreino"></strong></p>
+                            <input type="hidden" id="atribuirIdTreino">
+                            <div class="mb-3">
+                                <label class="form-label">Selecione o aluno</label>
+                                <select id="selectAluno" class="form-select">
+                                    <option value="">-- Selecione --</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" id="btnConfirmarAtribuir" class="btn btn-primary">Atribuir</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tabelaContainer" class="d-none">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Treino</th>
+                                <th>Calorias</th>
+                                <th style="width: 180px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaTreinos">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="alertDash" class="alert d-none mt-3"></div>
+        </div>
+    </div>
+
+    <script src="/lib/jquery/jquery-3.6.0.min.js"></script>
+    <script src="/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script>
+        // Ler parametros da URL (vindo de alunos.html)
+        lerParametrosUrl();
+
+        // Mostrar badge se gerenciando outro usuario
+        if (gerenciandoOutro()) {
+            $('#nomeAlunoGerenciado').text(nomeUsuarioSelecionado);
+            $('#badgeGerenciando').removeClass('d-none');
+        }
+
+        // Atualizar link do historico
+        var histUrl = '/historico.html';
+        if (idUsuarioSelecionado) histUrl += '?id_usuario=' + idUsuarioSelecionado + '&nome=' + encodeURIComponent(nomeUsuarioSelecionado);
+        $('#linkHistorico').attr('href', histUrl);
+
+        // Atualizar link da agenda
+        var agendaUrl = '/agenda.html';
+        if (idUsuarioSelecionado) agendaUrl += '?id_usuario=' + idUsuarioSelecionado + '&nome=' + encodeURIComponent(nomeUsuarioSelecionado);
+        $('#btnAgenda').attr('href', agendaUrl);
+
+        function listarTreinos() {
+            $.ajax({
+                url: '/treinos' + getQueryParam(),
+                type: 'GET',
+                success: function(response) {
+                    var tbody = $('#tabelaTreinos');
+                    tbody.empty();
+                    if (response.treinos.length === 0) {
+                        $('#alertDash').removeClass('d-none alert-danger').addClass('alert-info').text('Nenhum treino encontrado.');
+                        $('#tabelaContainer').addClass('d-none');
+                        return;
+                    }
+                    $('#alertDash').addClass('d-none');
+                    var isGerenciando = gerenciandoOutro();
+                    var isTreinador = (tipoUsuario === 'TRE' || tipoUsuario === 'ADM');
+                    response.treinos.forEach(function(treino) {
+                        var btnTreinoDia = isGerenciando ? '' :
+                            '<button class="btn btn-sm btn-outline-success btn-treino-dia me-1" title="Treinar hoje"><i class="bi bi-calendar-check"></i></button>';
+                        var btnAtribuir = (isTreinador && !isGerenciando) ?
+                            '<button class="btn btn-sm btn-outline-warning btn-atribuir me-1" title="Atribuir a aluno"><i class="bi bi-person-plus"></i></button>' : '';
+                        tbody.append(
+                            '<tr class="treino-row" data-id="' + treino.id_treino + '" data-nome="' + treino.no_treino + '">' +
+                            '<td class="td-nome">' + treino.no_treino + '</td>' +
+                            '<td class="text-center">' + (treino.total_calorias || 0) + '</td>' +
+                            '<td class="text-center text-nowrap">' +
+                            btnTreinoDia +
+                            btnAtribuir +
+                            '<button class="btn btn-sm btn-outline-primary btn-editar me-1" title="Editar"><i class="bi bi-pencil-square"></i></button>' +
+                            '<button class="btn btn-sm btn-outline-danger btn-excluir" title="Excluir"><i class="bi bi-trash"></i></button>' +
+                            '</td>' +
+                            '</tr>'
+                        );
+                    });
+                    $('#tabelaContainer').removeClass('d-none');
+                },
+                error: function(xhr) {
+                    if (xhr.status === 401) {
+                        window.location.href = '/index.html';
+                        return;
+                    }
+                    var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao buscar treinos";
+                    $('#alertDash').removeClass('d-none alert-info').addClass('alert-danger').text(msg);
+                }
+            });
+        }
+
+        // Clicar no nome do treino -> abrir treinando
+        $(document).on('click', '.treino-row .td-nome', function() {
+            var idTreino = $(this).closest('tr').data('id');
+            var url = '/treinando.html?id_treino=' + idTreino;
+            if (idUsuarioSelecionado) url += '&id_usuario=' + idUsuarioSelecionado + '&nome=' + encodeURIComponent(nomeUsuarioSelecionado);
+            window.location.href = url;
+        });
+
+        // Treino do dia
+        function registrarTreinoDia(idTreino, nomeTreino, confirmar) {
+            $.ajax({
+                url: '/treino-dia',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ id_treino: idTreino, confirmar: !!confirmar }),
+                success: function(response) {
+                    if (response.ja_registrado) {
+                        if (confirm(response.message)) {
+                            registrarTreinoDia(idTreino, nomeTreino, true);
+                        }
+                        return;
+                    }
+                    $('#alertDash').removeClass('d-none alert-danger alert-info').addClass('alert-success').text(response.message);
+                    setTimeout(function() { $('#alertDash').addClass('d-none'); }, 2000);
+                },
+                error: function(xhr) {
+                    if (xhr.status === 401) { window.location.href = '/index.html'; return; }
+                    var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao registrar treino do dia";
+                    $('#alertDash').removeClass('d-none alert-info alert-success').addClass('alert-danger').text(msg);
+                }
+            });
+        }
+        $(document).on('click', '.btn-treino-dia', function(e) {
+            e.stopPropagation();
+            var row = $(this).closest('tr');
+            var idTreino = row.data('id');
+            var nomeTreino = row.data('nome');
+            if (!confirm('Registrar "' + nomeTreino + '" como treino de hoje?')) return;
+            registrarTreinoDia(idTreino, nomeTreino, false);
+        });
+
+        // Carregar exercicios no modal editar
+        function carregarExercicios(idTreino) {
+            $.ajax({
+                url: '/treinando/' + idTreino,
+                type: 'GET',
+                success: function(response) {
+                    var tbody = $('#tabelaExerciciosModal');
+                    tbody.empty();
+                    if (response.exercicios.length === 0) {
+                        $('#semExercicios').removeClass('d-none');
+                        return;
+                    }
+                    $('#semExercicios').addClass('d-none');
+                    response.exercicios.forEach(function(ex) {
+                        var urlFormatada = formatUrl(ex.tx_url);
+                        var urlCell = urlFormatada
+                            ? '<a href="' + urlFormatada + '" target="_blank" title="' + urlFormatada + '"><i class="bi bi-box-arrow-up-right"></i></a>'
+                            : '';
+                        tbody.append(
+                            '<tr data-id-ex="' + ex.id_exercicio + '" data-nome-ex="' + ex.no_exercicio + '" data-url-ex="' + (ex.tx_url || '') + '" data-series="' + (ex.qt_series || '') + '" data-repeticao="' + (ex.qt_repeticao || '') + '" data-peso="' + (ex.nr_peso || '') + '" data-ordem="' + (ex.nr_ordem || '') + '" data-calorias="' + (ex.qt_calorias || '') + '" data-musculo="' + (ex.no_musculo || '') + '">' +
+                            '<td class="td-nome-ex">' + ex.no_exercicio + '</td>' +
+                            '<td class="text-center">' + (ex.nr_ordem || '-') + '</td>' +
+                            '<td class="td-series text-center">' + (ex.qt_series || '-') + '</td>' +
+                            '<td class="td-repeticao text-center">' + (ex.qt_repeticao || '-') + '</td>' +
+                            '<td class="td-peso text-center">' + (ex.nr_peso ? ex.nr_peso + ' kg' : '-') + '</td>' +
+                            '<td class="text-center">' + (ex.qt_calorias || '-') + '</td>' +
+                            '<td>' + (ex.no_musculo || '-') + '</td>' +
+                            '<td class="td-url-ex text-center">' + urlCell + '</td>' +
+                            '<td class="text-center">' +
+                            '<button class="btn btn-sm btn-outline-primary btn-editar-ex me-1"><i class="bi bi-pencil-square"></i></button>' +
+                            '<button class="btn btn-sm btn-outline-danger btn-excluir-ex"><i class="bi bi-trash"></i></button>' +
+                            '</td>' +
+                            '</tr>'
+                        );
+                    });
+                }
+            });
+        }
+
+        // Abrir modal editar treino
+        $(document).on('click', '.btn-editar', function(e) {
+            e.stopPropagation();
+            var row = $(this).closest('tr');
+            var idTreino = row.data('id');
+            $('#editIdTreino').val(idTreino);
+            $('#editNoTreino').val(row.data('nome'));
+            $('#alertModalEditar').addClass('d-none');
+            $('#formNovoExercicio').addClass('d-none');
+            carregarExercicios(idTreino);
+            new bootstrap.Modal(document.getElementById('modalEditarTreino')).show();
+        });
+
+        // Salvar nome do treino
+        $('#btnSalvarEdicao').on('click', function() {
+            var idTreino = $('#editIdTreino').val();
+            var noTreino = $('#editNoTreino').val().trim();
+            if (!noTreino) {
+                $('#alertModalEditar').removeClass('d-none alert-success').addClass('alert-danger').text('Informe o nome do treino.');
+                return;
+            }
+            $.ajax({
+                url: '/treinos/' + idTreino + getQueryParam(),
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify({ no_treino: noTreino }),
+                success: function() {
+                    $('#alertModalEditar').removeClass('d-none alert-danger').addClass('alert-success').text('Nome do treino atualizado!');
+                    setTimeout(function() { $('#alertModalEditar').addClass('d-none'); }, 1500);
+                },
+                error: function(xhr) {
+                    if (xhr.status === 401) { window.location.href = '/index.html'; return; }
+                    var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao atualizar treino";
+                    $('#alertModalEditar').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
+                }
+            });
+        });
+
+        // Novo exercicio
+        $('#btnNovoExercicio').on('click', function() {
+            $('#formEditarExercicio').addClass('d-none');
+            $('#formNovoExercicio').removeClass('d-none');
+            $('#novoNoExercicio').val('').focus();
+            $('#novoTxUrl').val('');
+            $('#novoNrOrdem').val('');
+            $('#novoQtSeries').val('');
+            $('#novoQtRepeticao').val('');
+            $('#novoNrPeso').val('');
+            $('#novoQtCalorias').val('');
+            $('#novoNoMusculo').val('');
+
+            var noTreino = $('#editNoTreino').val().trim();
+            $.ajax({
+                url: '/exercicios-academia/catalogo?no_treino=' + encodeURIComponent(noTreino),
+                type: 'GET',
+                success: function(response) {
+                    var sel = $('#selectExAcademia');
+                    sel.html('<option value="">-- Selecione ou digite abaixo --</option>');
+                    response.exercicios.forEach(function(ex) {
+                        var label = ex.no_exercicio + (ex.no_treino ? ' [' + ex.no_treino + ']' : '');
+                        sel.append('<option value="' + ex.id_exercicio + '" data-nome="' + ex.no_exercicio + '" data-url="' + (ex.tx_url || '') + '" data-calorias="' + (ex.qt_calorias || '') + '" data-musculo="' + (ex.no_musculo || '') + '">' + label + '</option>');
+                    });
+                }
+            });
+        });
+
+        $('#selectExAcademia').on('change', function() {
+            var opt = $(this).find(':selected');
+            if (!opt.val()) return;
+            $('#novoNoExercicio').val(opt.data('nome'));
+            $('#novoTxUrl').val(opt.data('url') || '');
+            $('#novoQtCalorias').val(opt.data('calorias') || '');
+            $('#novoNoMusculo').val(opt.data('musculo') || '');
+        });
+        $('#btnCancelarNovoExercicio').on('click', function() {
+            $('#formNovoExercicio').addClass('d-none');
+        });
+        $('#btnSalvarNovoExercicio').on('click', function() {
+            var nome = $('#novoNoExercicio').val().trim();
+            var idTreino = $('#editIdTreino').val();
+            if (!nome) {
+                $('#alertModalEditar').removeClass('d-none alert-success').addClass('alert-danger').text('Informe o nome do exercicio.');
+                return;
+            }
+            $.ajax({
+                url: '/exercicios',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ id_treino: idTreino, no_exercicio: nome, tx_url: $('#novoTxUrl').val().trim(), nr_ordem: $('#novoNrOrdem').val() || null, qt_series: $('#novoQtSeries').val() || null, qt_repeticao: $('#novoQtRepeticao').val() || null, nr_peso: $('#novoNrPeso').val() || null, qt_calorias: $('#novoQtCalorias').val() || null, no_musculo: $('#novoNoMusculo').val().trim() || null }),
+                success: function() {
+                    $('#formNovoExercicio').addClass('d-none');
+                    $('#alertModalEditar').removeClass('d-none alert-danger').addClass('alert-success').text('Exercicio criado!');
+                    setTimeout(function() { $('#alertModalEditar').addClass('d-none'); }, 1500);
+                    carregarExercicios(idTreino);
+                },
+                error: function(xhr) {
+                    if (xhr.status === 401) { window.location.href = '/index.html'; return; }
+                    var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao criar exercicio";
+                    $('#alertModalEditar').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
+                }
+            });
+        });
+
+        // Editar exercicio
+        $(document).on('click', '.btn-editar-ex', function() {
+            var row = $(this).closest('tr');
+            $('#editIdExercicio').val(row.data('id-ex'));
+            $('#editNoExercicio').val(row.data('nome-ex'));
+            $('#editNrOrdem').val(row.data('ordem') || '');
+            $('#editQtSeries').val(row.data('series') || '');
+            $('#editQtRepeticao').val(row.data('repeticao') || '');
+            $('#editNrPeso').val(row.data('peso') || '');
+            $('#editQtCalorias').val(row.data('calorias') || '');
+            $('#editNoMusculo').val(row.data('musculo') || '');
+            $('#editTxUrl').val(row.data('url-ex') || '');
+            $('#formNovoExercicio').addClass('d-none');
+            $('#formEditarExercicio').removeClass('d-none');
+            $('#editNoExercicio').focus();
+        });
+        $('#btnCancelarEditExercicio').on('click', function() {
+            $('#formEditarExercicio').addClass('d-none');
+        });
+        $('#btnSalvarEditExercicio').on('click', function() {
+            var idEx = $('#editIdExercicio').val();
+            var idTreino = $('#editIdTreino').val();
+            var novoNome = $('#editNoExercicio').val().trim();
+            if (!novoNome) {
+                $('#alertModalEditar').removeClass('d-none alert-success').addClass('alert-danger').text('Informe o nome do exercicio.');
+                return;
+            }
+            $.ajax({
+                url: '/exercicios/' + idTreino + '/' + idEx,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    no_exercicio: novoNome,
+                    tx_url: $('#editTxUrl').val().trim(),
+                    nr_ordem: $('#editNrOrdem').val() || null,
+                    qt_series: $('#editQtSeries').val() || null,
+                    qt_repeticao: $('#editQtRepeticao').val() || null,
+                    nr_peso: $('#editNrPeso').val() || null,
+                    qt_calorias: $('#editQtCalorias').val() || null,
+                    no_musculo: $('#editNoMusculo').val().trim() || null
+                }),
+                success: function() {
+                    $('#formEditarExercicio').addClass('d-none');
+                    carregarExercicios(idTreino);
+                    $('#alertModalEditar').removeClass('d-none alert-danger').addClass('alert-success').text('Exercicio atualizado!');
+                    setTimeout(function() { $('#alertModalEditar').addClass('d-none'); }, 1500);
+                },
+                error: function(xhr) {
+                    if (xhr.status === 401) { window.location.href = '/index.html'; return; }
+                    var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao atualizar exercicio";
+                    $('#alertModalEditar').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
+                }
+            });
+        });
+
+        // Excluir exercicio
+        $(document).on('click', '.btn-excluir-ex', function() {
+            var row = $(this).closest('tr');
+            var idEx = row.data('id-ex');
+            var nomeEx = row.data('nome-ex');
+            var idTreino = $('#editIdTreino').val();
+            if (!confirm('Excluir exercicio "' + nomeEx + '"?')) return;
+            $.ajax({
+                url: '/exercicios/' + idTreino + '/' + idEx,
+                type: 'DELETE',
+                success: function() {
+                    carregarExercicios(idTreino);
+                },
+                error: function(xhr) {
+                    if (xhr.status === 401) { window.location.href = '/index.html'; return; }
+                    var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao excluir exercicio";
+                    alert(msg);
+                }
+            });
+        });
+
+        // Atualizar lista ao fechar modal editar
+        document.getElementById('modalEditarTreino').addEventListener('hidden.bs.modal', function() {
+            listarTreinos();
+        });
+
+        // Excluir treino
+        $(document).on('click', '.btn-excluir', function(e) {
+            e.stopPropagation();
+            var row = $(this).closest('tr');
+            $('#excluirIdTreino').val(row.data('id'));
+            $('#excluirNomeTreino').text(row.data('nome'));
+            new bootstrap.Modal(document.getElementById('modalExcluirTreino')).show();
+        });
+
+        $('#btnConfirmarExclusao').on('click', function() {
+            var idTreino = $('#excluirIdTreino').val();
+            $.ajax({
+                url: '/treinos/' + idTreino + getQueryParam(),
+                type: 'DELETE',
+                success: function() {
+                    bootstrap.Modal.getInstance(document.getElementById('modalExcluirTreino')).hide();
+                    listarTreinos();
+                },
+                error: function(xhr) {
+                    if (xhr.status === 401) {
+                        window.location.href = '/index.html';
+                        return;
+                    }
+                    var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao excluir treino";
+                    alert(msg);
+                }
+            });
+        });
+
+        // Carregar tipos de treino ao abrir modal Novo Treino
+        document.getElementById('modalNovoTreino').addEventListener('show.bs.modal', function() {
+            $.ajax({
+                url: '/exercicios-academia/treinos',
+                type: 'GET',
+                success: function(response) {
+                    var sel = $('#selectTipoTreino');
+                    sel.html('<option value="">-- Selecione ou digite abaixo --</option>');
+                    response.treinos.forEach(function(t) {
+                        sel.append('<option value="' + t + '">' + t + '</option>');
+                    });
+                }
+            });
+        });
+
+        $('#selectTipoTreino').on('change', function() {
+            var val = $(this).val();
+            if (val) {
+                $('#noTreino').val(val);
+            }
+        });
+
+        // Salvar novo treino
+        $('#btnSalvarTreino').on('click', function() {
+            var noTreino = $('#noTreino').val().trim();
+            if (!noTreino) {
+                $('#alertModal').removeClass('d-none alert-success').addClass('alert-danger').text('Informe o nome do treino.');
+                return;
+            }
+            $.ajax({
+                url: '/treinos' + getQueryParam(),
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ no_treino: noTreino }),
+                success: function(response) {
+                    $('#alertModal').removeClass('d-none alert-danger').addClass('alert-success').text('Treino criado com sucesso!');
+                    $('#noTreino').val('');
+                    setTimeout(function() {
+                        bootstrap.Modal.getInstance(document.getElementById('modalNovoTreino')).hide();
+                        $('#alertModal').addClass('d-none');
+                        listarTreinos();
+                    }, 800);
+                },
+                error: function(xhr) {
+                    if (xhr.status === 401) {
+                        window.location.href = '/index.html';
+                        return;
+                    }
+                    var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao criar treino";
+                    $('#alertModal').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
+                }
+            });
+        });
+
+        // Atribuir treino a aluno
+        $(document).on('click', '.btn-atribuir', function(e) {
+            e.stopPropagation();
+            var row = $(this).closest('tr');
+            var nomeTreino = row.data('nome');
+            $('#atribuirIdTreino').val(row.data('id'));
+            $('#atribuirNomeTreino').text(nomeTreino);
+            $('#alertAtribuir').addClass('d-none');
+            $('#selectAluno').html('<option value="">-- Selecione --</option>');
+
+            $.ajax({
+                url: '/meus-alunos?no_treino=' + encodeURIComponent(nomeTreino),
+                type: 'GET',
+                success: function(response) {
+                    if (response.alunos.length === 0) {
+                        $('#alertAtribuir').removeClass('d-none alert-success').addClass('alert-warning').text('Todos os alunos ja possuem este treino.');
+                    }
+                    response.alunos.forEach(function(aluno) {
+                        $('#selectAluno').append('<option value="' + aluno.id_usuario + '">' + aluno.no_usuario + ' (' + (aluno.tx_email || '') + ')</option>');
+                    });
+                    new bootstrap.Modal(document.getElementById('modalAtribuirTreino')).show();
+                }
+            });
+        });
+
+        $('#btnConfirmarAtribuir').on('click', function() {
+            var idTreino = $('#atribuirIdTreino').val();
+            var idAluno = $('#selectAluno').val();
+            if (!idAluno) {
+                $('#alertAtribuir').removeClass('d-none alert-success').addClass('alert-danger').text('Selecione um aluno.');
+                return;
+            }
+            $.ajax({
+                url: '/treinos/atribuir',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ id_treino: Number(idTreino), id_usuario_destino: Number(idAluno) }),
+                success: function(response) {
+                    $('#alertAtribuir').removeClass('d-none alert-danger').addClass('alert-success').text(response.message);
+                    setTimeout(function() {
+                        bootstrap.Modal.getInstance(document.getElementById('modalAtribuirTreino')).hide();
+                    }, 1500);
+                },
+                error: function(xhr) {
+                    var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao atribuir treino";
+                    $('#alertAtribuir').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
+                }
+            });
+        });
+
+        // Inicializar
+        $(document).ready(function() {
+            inicializar(function() {
+                listarTreinos();
+            });
+        });
+    </script>
+</body>
+</html>

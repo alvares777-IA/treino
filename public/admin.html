@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/favicon.png?v=2">
+    <title>Administracao</title>
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container-fluid">
+            <span class="navbar-brand"><i class="bi bi-gear"></i> Administracao</span>
+            <a href="/alunos.html" class="btn btn-outline-light btn-sm">Voltar</a>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <ul class="nav nav-tabs mb-3" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabExercicios" type="button">Exercicios Academia</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabVinculos" type="button">Vinculos Aluno-Treinador</button>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <!-- ABA EXERCICIOS ACADEMIA -->
+            <div class="tab-pane fade show active" id="tabExercicios">
+                <div id="alertExercicios" class="alert d-none"></div>
+
+                <button id="btnNovoExAcademia" class="btn btn-success btn-sm mb-3"><i class="bi bi-plus-lg"></i> Novo Exercicio</button>
+
+                <!-- Form novo/editar exercicio -->
+                <div id="formExAcademia" class="d-none mb-3 border rounded p-3 bg-light">
+                    <input type="hidden" id="exAcademiaId">
+                    <div class="row mb-2">
+                        <div class="col-12 col-md-4 mb-2">
+                            <label class="form-label small text-muted mb-1">Exercicio</label>
+                            <input type="text" id="exAcademiaNome" class="form-control" placeholder="Nome do exercicio">
+                        </div>
+                        <div class="col-12 col-md-4 mb-2">
+                            <label class="form-label small text-muted mb-1">URL</label>
+                            <input type="url" id="exAcademiaUrl" class="form-control" placeholder="URL (video, link)">
+                        </div>
+                        <div class="col-6 col-md-2 mb-2">
+                            <label class="form-label small text-muted mb-1">Calorias</label>
+                            <input type="number" id="exAcademiaCalorias" class="form-control" placeholder="Calorias" min="0">
+                        </div>
+                        <div class="col-6 col-md-2 mb-2">
+                            <label class="form-label small text-muted mb-1">Musculo</label>
+                            <input type="text" id="exAcademiaMusculo" class="form-control" placeholder="Musculo">
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 col-md-4 mb-2">
+                            <label class="form-label small text-muted mb-1">Tipo Treino</label>
+                            <input type="text" id="exAcademiaTreino" class="form-control" placeholder="Tipo de Treino (A, B, C...)">
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <button id="btnCancelarExAcademia" class="btn btn-secondary btn-sm">Cancelar</button>
+                        <button id="btnSalvarExAcademia" class="btn btn-primary btn-sm">Salvar</button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover table-sm">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Exercicio</th>
+                                <th>URL</th>
+                                <th>Calorias</th>
+                                <th>Musculo</th>
+                                <th>Tipo Treino</th>
+                                <th style="width:100px;">Acoes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaExAcademia"></tbody>
+                    </table>
+                </div>
+                <p id="semExAcademia" class="text-muted text-center d-none">Nenhum exercicio cadastrado.</p>
+            </div>
+
+            <!-- ABA VINCULOS -->
+            <div class="tab-pane fade" id="tabVinculos">
+                <div id="alertVinculos" class="alert d-none"></div>
+
+                <div class="row mb-3">
+                    <div class="col-12 col-md-6">
+                        <label class="form-label">Selecione o Treinador</label>
+                        <select id="selectTreinador" class="form-select">
+                            <option value="">-- Selecione --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Alunos do treinador selecionado -->
+                <div id="divAlunosTreinador" class="d-none">
+                    <h6>Alunos vinculados</h6>
+                    <div id="listaAlunosTreinador" class="list-group mb-3"></div>
+                    <p id="semAlunosTreinador" class="text-muted d-none">Nenhum aluno vinculado.</p>
+
+                    <hr>
+                    <h6>Vincular novo aluno</h6>
+                    <div class="row mb-3">
+                        <div class="col-12 col-md-6 mb-2">
+                            <select id="selectAlunoSemTreinador" class="form-select">
+                                <option value="">-- Selecione um aluno --</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <button id="btnVincularAluno" class="btn btn-primary btn-sm">Vincular</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/lib/jquery/jquery-3.6.0.min.js"></script>
+    <script src="/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script>
+        var ajaxAtivo = 0;
+        $.ajaxSetup({
+            beforeSend: function() {
+                ajaxAtivo++;
+                $('button, .btn').prop('disabled', true);
+            },
+            complete: function() {
+                ajaxAtivo--;
+                if (ajaxAtivo <= 0) {
+                    ajaxAtivo = 0;
+                    $('button, .btn').prop('disabled', false);
+                }
+            }
+        });
+
+        // Verificar se e ADM
+        $(document).ready(function() {
+            $.ajax({
+                url: '/usuario',
+                type: 'GET',
+                success: function(response) {
+                    if (response.ao_tipo !== 'ADM') {
+                        window.location.href = '/alunos.html';
+                        return;
+                    }
+                    carregarExercicios();
+                    carregarTreinadores();
+                },
+                error: function(xhr) {
+                    if (xhr.status === 401) window.location.href = '/index.html';
+                }
+            });
+        });
+
+        // ==================== EXERCICIOS ACADEMIA ====================
+
+        function carregarExercicios() {
+            $.ajax({
+                url: '/admin/exercicios-academia',
+                type: 'GET',
+                success: function(response) {
+                    var tbody = $('#tabelaExAcademia');
+                    tbody.empty();
+                    if (response.exercicios.length === 0) {
+                        $('#semExAcademia').removeClass('d-none');
+                        return;
+                    }
+                    $('#semExAcademia').addClass('d-none');
+                    response.exercicios.forEach(function(ex) {
+                        var urlCell = ex.tx_url
+                            ? '<a href="' + ex.tx_url + '" target="_blank" title="' + ex.tx_url + '"><i class="bi bi-box-arrow-up-right"></i></a>'
+                            : '-';
+                        tbody.append(
+                            '<tr data-id="' + ex.id_exercicio + '">' +
+                            '<td>' + ex.no_exercicio + '</td>' +
+                            '<td class="text-center">' + urlCell + '</td>' +
+                            '<td class="text-center">' + (ex.qt_calorias || '-') + '</td>' +
+                            '<td>' + (ex.no_musculo || '-') + '</td>' +
+                            '<td>' + (ex.no_treino || '-') + '</td>' +
+                            '<td class="text-center">' +
+                            '<button class="btn btn-sm btn-outline-primary btn-editar-exa me-1"><i class="bi bi-pencil-square"></i></button>' +
+                            '<button class="btn btn-sm btn-outline-danger btn-excluir-exa"><i class="bi bi-trash"></i></button>' +
+                            '</td>' +
+                            '</tr>'
+                        );
+                    });
+                }
+            });
+        }
+
+        var editandoExAcademia = false;
+
+        $('#btnNovoExAcademia').on('click', function() {
+            editandoExAcademia = false;
+            $('#exAcademiaId').val('');
+            $('#exAcademiaNome').val('');
+            $('#exAcademiaUrl').val('');
+            $('#exAcademiaCalorias').val('');
+            $('#exAcademiaMusculo').val('');
+            $('#exAcademiaTreino').val('');
+            $('#formExAcademia').removeClass('d-none');
+            $('#exAcademiaNome').focus();
+        });
+
+        $('#btnCancelarExAcademia').on('click', function() {
+            $('#formExAcademia').addClass('d-none');
+        });
+
+        $(document).on('click', '.btn-editar-exa', function() {
+            var row = $(this).closest('tr');
+            editandoExAcademia = true;
+            $('#exAcademiaId').val(row.data('id'));
+            var cells = row.find('td');
+            $('#exAcademiaNome').val(cells.eq(0).text());
+            var link = cells.eq(1).find('a');
+            $('#exAcademiaUrl').val(link.length ? link.attr('href') : '');
+            var calorias = cells.eq(2).text().trim();
+            $('#exAcademiaCalorias').val(calorias === '-' ? '' : calorias);
+            var musculo = cells.eq(3).text().trim();
+            $('#exAcademiaMusculo').val(musculo === '-' ? '' : musculo);
+            var treino = cells.eq(4).text().trim();
+            $('#exAcademiaTreino').val(treino === '-' ? '' : treino);
+            $('#formExAcademia').removeClass('d-none');
+            $('#exAcademiaNome').focus();
+        });
+
+        $(document).on('click', '.btn-excluir-exa', function() {
+            var row = $(this).closest('tr');
+            var id = row.data('id');
+            var nome = row.find('td').eq(0).text();
+            if (!confirm('Excluir exercicio "' + nome + '"?')) return;
+            $.ajax({
+                url: '/admin/exercicios-academia/' + id,
+                type: 'DELETE',
+                success: function() {
+                    carregarExercicios();
+                },
+                error: function(xhr) {
+                    var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao excluir";
+                    alert(msg);
+                }
+            });
+        });
+
+        $('#btnSalvarExAcademia').on('click', function() {
+            var nome = $('#exAcademiaNome').val().trim();
+            if (!nome) {
+                $('#alertExercicios').removeClass('d-none alert-success').addClass('alert-danger').text('Informe o nome do exercicio.');
+                return;
+            }
+            var dados = {
+                no_exercicio: nome,
+                tx_url: $('#exAcademiaUrl').val().trim(),
+                qt_calorias: $('#exAcademiaCalorias').val() || null,
+                no_musculo: $('#exAcademiaMusculo').val().trim(),
+                no_treino: $('#exAcademiaTreino').val().trim()
+            };
+
+            if (editandoExAcademia) {
+                var id = $('#exAcademiaId').val();
+                $.ajax({
+                    url: '/admin/exercicios-academia/' + id,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(dados),
+                    success: function() {
+                        $('#formExAcademia').addClass('d-none');
+                        $('#alertExercicios').removeClass('d-none alert-danger').addClass('alert-success').text('Exercicio atualizado!');
+                        setTimeout(function() { $('#alertExercicios').addClass('d-none'); }, 2000);
+                        carregarExercicios();
+                    },
+                    error: function(xhr) {
+                        var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao atualizar";
+                        $('#alertExercicios').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
+                    }
+                });
+            } else {
+                $.ajax({
+                    url: '/admin/exercicios-academia',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(dados),
+                    success: function() {
+                        $('#formExAcademia').addClass('d-none');
+                        $('#alertExercicios').removeClass('d-none alert-danger').addClass('alert-success').text('Exercicio criado!');
+                        setTimeout(function() { $('#alertExercicios').addClass('d-none'); }, 2000);
+                        carregarExercicios();
+                    },
+                    error: function(xhr) {
+                        var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao criar";
+                        $('#alertExercicios').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
+                    }
+                });
+            }
+        });
+
+        // ==================== VINCULOS ====================
+
+        function carregarTreinadores() {
+            $.ajax({
+                url: '/admin/treinadores',
+                type: 'GET',
+                success: function(response) {
+                    var sel = $('#selectTreinador');
+                    sel.html('<option value="">-- Selecione --</option>');
+                    response.treinadores.forEach(function(t) {
+                        sel.append('<option value="' + t.id_usuario + '">' + t.no_usuario + ' (' + (t.tx_email || '') + ')</option>');
+                    });
+                }
+            });
+        }
+
+        $('#selectTreinador').on('change', function() {
+            var id = $(this).val();
+            if (!id) {
+                $('#divAlunosTreinador').addClass('d-none');
+                return;
+            }
+            $('#divAlunosTreinador').removeClass('d-none');
+            carregarAlunosTreinador(id);
+            carregarUsuariosSemTreinador();
+        });
+
+        function carregarAlunosTreinador(idTreinador) {
+            $.ajax({
+                url: '/admin/treinadores/' + idTreinador + '/alunos',
+                type: 'GET',
+                success: function(response) {
+                    var lista = $('#listaAlunosTreinador');
+                    lista.empty();
+                    if (response.alunos.length === 0) {
+                        $('#semAlunosTreinador').removeClass('d-none');
+                        return;
+                    }
+                    $('#semAlunosTreinador').addClass('d-none');
+                    response.alunos.forEach(function(a) {
+                        lista.append(
+                            '<div class="list-group-item d-flex justify-content-between align-items-center">' +
+                            '<div><i class="bi bi-person"></i> ' + a.no_usuario + ' <small class="text-muted">(' + (a.tx_email || '') + ')</small></div>' +
+                            '<button class="btn btn-sm btn-outline-danger btn-desvincular-admin" data-id-usuario="' + a.id_usuario + '"><i class="bi bi-person-x"></i> Desvincular</button>' +
+                            '</div>'
+                        );
+                    });
+                }
+            });
+        }
+
+        function carregarUsuariosSemTreinador() {
+            $.ajax({
+                url: '/admin/usuarios-sem-treinador',
+                type: 'GET',
+                success: function(response) {
+                    var sel = $('#selectAlunoSemTreinador');
+                    sel.html('<option value="">-- Selecione um aluno --</option>');
+                    response.usuarios.forEach(function(u) {
+                        sel.append('<option value="' + u.id_usuario + '">' + u.no_usuario + ' (' + (u.tx_email || '') + ')</option>');
+                    });
+                }
+            });
+        }
+
+        $(document).on('click', '.btn-desvincular-admin', function() {
+            var idUsuario = $(this).data('id-usuario');
+            var idTreinador = $('#selectTreinador').val();
+            if (!confirm('Desvincular este aluno do treinador?')) return;
+            $.ajax({
+                url: '/admin/vincular/' + idUsuario + '/' + idTreinador,
+                type: 'DELETE',
+                success: function() {
+                    $('#alertVinculos').removeClass('d-none alert-danger').addClass('alert-success').text('Vinculo removido!');
+                    setTimeout(function() { $('#alertVinculos').addClass('d-none'); }, 2000);
+                    carregarAlunosTreinador(idTreinador);
+                    carregarUsuariosSemTreinador();
+                },
+                error: function(xhr) {
+                    var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao desvincular";
+                    $('#alertVinculos').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
+                }
+            });
+        });
+
+        $('#btnVincularAluno').on('click', function() {
+            var idAluno = $('#selectAlunoSemTreinador').val();
+            var idTreinador = $('#selectTreinador').val();
+            if (!idAluno) {
+                $('#alertVinculos').removeClass('d-none alert-success').addClass('alert-danger').text('Selecione um aluno.');
+                return;
+            }
+            $.ajax({
+                url: '/admin/vincular',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ id_usuario: Number(idAluno), id_treinador: Number(idTreinador) }),
+                success: function() {
+                    $('#alertVinculos').removeClass('d-none alert-danger').addClass('alert-success').text('Aluno vinculado com sucesso!');
+                    setTimeout(function() { $('#alertVinculos').addClass('d-none'); }, 2000);
+                    carregarAlunosTreinador(idTreinador);
+                    carregarUsuariosSemTreinador();
+                },
+                error: function(xhr) {
+                    var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao vincular";
+                    $('#alertVinculos').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
