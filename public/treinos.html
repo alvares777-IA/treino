@@ -308,8 +308,9 @@
                         <thead class="table-dark">
                             <tr>
                                 <th>Treino</th>
-                                <th>Calorias</th>
-                                <th style="width: 180px;"></th>
+                                <th class="text-center">Total Calorias</th>
+                                <th class="text-center">Total Treino</th>
+                                <th class="text-center" style="width: 180px;"></th>
                             </tr>
                         </thead>
                         <tbody id="tabelaTreinos">
@@ -369,6 +370,7 @@
                             '<tr class="treino-row" data-id="' + treino.id_treino + '" data-nome="' + treino.no_treino + '">' +
                             '<td class="td-nome">' + treino.no_treino + '</td>' +
                             '<td class="text-center">' + (treino.total_calorias || 0) + '</td>' +
+                            '<td class="text-center">' + (treino.total_calorias_treino || 0) + '</td>' +
                             '<td class="text-center text-nowrap">' +
                             btnTreinoDia +
                             btnAtribuir +

@@ -1,10 +1,15 @@
 async function listar(conn, idUsuario) {
     const sql = `
         SELECT t.no_treino, t.id_treino,
+               -- Soma histórica (treino_dia)
                NVL((SELECT SUM(NVL(td.qt_calorias,0))
                     FROM campeonato.treino_dia td
                     WHERE td.id_treino = t.id_treino
-                    AND td.id_usuario = t.id_usuario), 0) AS total_calorias
+                    AND td.id_usuario = t.id_usuario), 0) AS total_calorias,
+               -- Soma do treino (exercicios)
+               NVL((SELECT SUM(NVL(e.qt_calorias,0) * NVL(e.qt_repeticao,0))
+                    FROM campeonato.exercicios e
+                    WHERE e.id_treino = t.id_treino), 0) AS total_calorias_treino
         FROM campeonato.treinos t
         WHERE t.id_usuario = :v_id
     `;

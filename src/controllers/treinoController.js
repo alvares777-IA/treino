@@ -26,7 +26,8 @@ async function listar(req, res) {
         const treinos = result.rows.map(row => ({
             no_treino: row[0],
             id_treino: row[1],
-            total_calorias: row[2]
+            total_calorias: row[2],
+            total_calorias_treino: row[3]
         }));
         res.json({ success: true, treinos });
     } catch (err) {
