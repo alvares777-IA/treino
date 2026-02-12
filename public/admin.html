@@ -1,118 +1,159 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="/favicon.png?v=2">
-    <title>Administracao</title>
+    <title>Administração</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
 </head>
+
 <body>
-    <nav class="navbar navbar-dark bg-dark mb-4">
+    <nav class="navbar navbar-expand-lg navbar-modern sticky-top mb-4">
         <div class="container-fluid">
-            <span class="navbar-brand"><i class="bi bi-gear"></i> Administracao</span>
-            <a href="/alunos.html" class="btn btn-outline-light btn-sm">Voltar</a>
+            <a class="navbar-brand fw-bold text-primary" href="/treinos.html">
+                <i class="bi bi-shield-lock me-2"></i>Portal Administrativo
+            </a>
+            <div class="d-flex align-items-center">
+                <a href="/treinos.html" class="btn btn-modern btn-modern-outline btn-sm me-2">Voltar</a>
+                <button id="btnSair" class="btn btn-modern btn-modern-primary btn-sm">Sair</button>
+            </div>
         </div>
     </nav>
 
-    <div class="container-fluid">
-        <ul class="nav nav-tabs mb-3" role="tablist">
-            <li class="nav-item">
-                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabExercicios" type="button">Exercicios Academia</button>
+    <div class="container">
+        <h4 class="fw-bold mb-4">Gerenciamento do Sistema</h4>
+        <div id="alertAdmin" class="alert d-none rounded-3"></div>
+
+        <ul class="nav nav-pills nav-fill mb-4 p-1 bg-light rounded-4 gap-1" id="adminTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active rounded-4 fw-medium py-3" data-bs-toggle="tab"
+                    data-bs-target="#tabExercicios" type="button" role="tab">
+                    <i class="bi bi-database-add me-2"></i>Academia de Exercícios
+                </button>
             </li>
-            <li class="nav-item">
-                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabVinculos" type="button">Vinculos Aluno-Treinador</button>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link rounded-4 fw-medium py-3" data-bs-toggle="tab" data-bs-target="#tabVinculos"
+                    type="button" role="tab">
+                    <i class="bi bi-people me-2"></i>Vínculos Aluno-Treinador
+                </button>
             </li>
         </ul>
 
         <div class="tab-content">
             <!-- ABA EXERCICIOS ACADEMIA -->
             <div class="tab-pane fade show active" id="tabExercicios">
-                <div id="alertExercicios" class="alert d-none"></div>
+                <div id="alertExercicios" class="alert d-none rounded-3"></div>
 
-                <button id="btnNovoExAcademia" class="btn btn-success btn-sm mb-3"><i class="bi bi-plus-lg"></i> Novo Exercicio</button>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="fw-bold mb-0 text-muted text-uppercase small">Biblioteca de Exercícios</h6>
+                    <button id="btnNovoExAcademia" class="btn btn-modern btn-modern-primary btn-sm px-4">
+                        <i class="bi bi-plus-lg"></i> Novo Exercício
+                    </button>
+                </div>
 
                 <!-- Form novo/editar exercicio -->
-                <div id="formExAcademia" class="d-none mb-3 border rounded p-3 bg-light">
+                <div id="formExAcademia" class="d-none card-modern p-4 mb-4 bg-light bg-opacity-50">
+                    <h6 class="fw-bold mb-3">Detalhes do Exercício</h6>
                     <input type="hidden" id="exAcademiaId">
-                    <div class="row mb-2">
-                        <div class="col-12 col-md-4 mb-2">
-                            <label class="form-label small text-muted mb-1">Exercicio</label>
-                            <input type="text" id="exAcademiaNome" class="form-control" placeholder="Nome do exercicio">
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small fw-medium">Nome</label>
+                            <input type="text" id="exAcademiaNome" class="form-control form-control-modern"
+                                placeholder="Ex: Supino Reto">
                         </div>
-                        <div class="col-12 col-md-4 mb-2">
-                            <label class="form-label small text-muted mb-1">URL</label>
-                            <input type="url" id="exAcademiaUrl" class="form-control" placeholder="URL (video, link)">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small fw-medium">URL de Referência</label>
+                            <input type="url" id="exAcademiaUrl" class="form-control form-control-modern"
+                                placeholder="https://...">
                         </div>
-                        <div class="col-6 col-md-2 mb-2">
-                            <label class="form-label small text-muted mb-1">Calorias</label>
-                            <input type="number" id="exAcademiaCalorias" class="form-control" placeholder="Calorias" min="0">
+                        <div class="col-6 col-md-4">
+                            <label class="form-label small fw-medium">Calorias Est.</label>
+                            <input type="number" id="exAcademiaCalorias" class="form-control form-control-modern"
+                                placeholder="0" min="0">
                         </div>
-                        <div class="col-6 col-md-2 mb-2">
-                            <label class="form-label small text-muted mb-1">Musculo</label>
-                            <input type="text" id="exAcademiaMusculo" class="form-control" placeholder="Musculo">
+                        <div class="col-6 col-md-4">
+                            <label class="form-label small fw-medium">Músculo Alvo</label>
+                            <input type="text" id="exAcademiaMusculo" class="form-control form-control-modern"
+                                placeholder="Ex: Peitoral">
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small fw-medium">Tipo Sugerido</label>
+                            <input type="text" id="exAcademiaTreino" class="form-control form-control-modern"
+                                placeholder="Ex: A, B, C...">
                         </div>
                     </div>
-                    <div class="row mb-2">
-                        <div class="col-12 col-md-4 mb-2">
-                            <label class="form-label small text-muted mb-1">Tipo Treino</label>
-                            <input type="text" id="exAcademiaTreino" class="form-control" placeholder="Tipo de Treino (A, B, C...)">
-                        </div>
-                    </div>
-                    <div class="text-end">
-                        <button id="btnCancelarExAcademia" class="btn btn-secondary btn-sm">Cancelar</button>
-                        <button id="btnSalvarExAcademia" class="btn btn-primary btn-sm">Salvar</button>
+                    <div class="d-flex gap-2 justify-content-end">
+                        <button id="btnCancelarExAcademia"
+                            class="btn btn-modern btn-modern-outline px-4">Cancelar</button>
+                        <button id="btnSalvarExAcademia"
+                            class="btn btn-modern btn-modern-primary px-5 shadow-sm">Salvar</button>
                     </div>
                 </div>
 
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover table-sm">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Exercicio</th>
-                                <th>URL</th>
-                                <th>Calorias</th>
-                                <th>Musculo</th>
-                                <th>Tipo Treino</th>
-                                <th style="width:100px;">Acoes</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabelaExAcademia"></tbody>
-                    </table>
+                <div class="card-modern">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="ps-4 text-uppercase small fw-bold text-muted">Exercício</th>
+                                    <th class="text-center text-uppercase small fw-bold text-muted">Ref.</th>
+                                    <th class="text-center text-uppercase small fw-bold text-muted">Calorias</th>
+                                    <th class="text-uppercase small fw-bold text-muted">Músculo</th>
+                                    <th class="text-uppercase small fw-bold text-muted">Tipo</th>
+                                    <th class="pe-4 text-center text-uppercase small fw-bold text-muted"
+                                        style="width:120px;">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelaExAcademia"></tbody>
+                        </table>
+                    </div>
                 </div>
                 <p id="semExAcademia" class="text-muted text-center d-none">Nenhum exercicio cadastrado.</p>
             </div>
 
             <!-- ABA VINCULOS -->
             <div class="tab-pane fade" id="tabVinculos">
-                <div id="alertVinculos" class="alert d-none"></div>
+                <div id="alertVinculos" class="alert d-none rounded-3"></div>
 
-                <div class="row mb-3">
-                    <div class="col-12 col-md-6">
-                        <label class="form-label">Selecione o Treinador</label>
-                        <select id="selectTreinador" class="form-select">
-                            <option value="">-- Selecione --</option>
-                        </select>
+                <div class="card-modern p-4 mb-4">
+                    <h6 class="fw-bold mb-3 text-uppercase small text-muted">Selecionar Treinador</h6>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <select id="selectTreinador" class="form-select form-control-modern">
+                                <option value="">-- Selecione para gerenciar alunos --</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Alunos do treinador selecionado -->
                 <div id="divAlunosTreinador" class="d-none">
-                    <h6>Alunos vinculados</h6>
-                    <div id="listaAlunosTreinador" class="list-group mb-3"></div>
-                    <p id="semAlunosTreinador" class="text-muted d-none">Nenhum aluno vinculado.</p>
-
-                    <hr>
-                    <h6>Vincular novo aluno</h6>
-                    <div class="row mb-3">
-                        <div class="col-12 col-md-6 mb-2">
-                            <select id="selectAlunoSemTreinador" class="form-select">
-                                <option value="">-- Selecione um aluno --</option>
-                            </select>
+                    <div class="card-modern mb-4">
+                        <div class="card-header bg-white border-bottom p-3">
+                            <h6 class="fw-bold mb-0">Alunos Vinculados</h6>
                         </div>
-                        <div class="col-12 col-md-3">
-                            <button id="btnVincularAluno" class="btn btn-primary btn-sm">Vincular</button>
+                        <div id="listaAlunosTreinador" class="list-group list-group-flush"></div>
+                        <p id="semAlunosTreinador" class="text-muted p-4 text-center d-none">Este treinador ainda não
+                            possui alunos vinculados.</p>
+                    </div>
+
+                    <div class="card-modern p-4 bg-primary-subtle border-0">
+                        <h6 class="fw-bold mb-3 text-primary">Vincular Novo Aluno</h6>
+                        <div class="row g-3">
+                            <div class="col-12 col-md-8">
+                                <select id="selectAlunoSemTreinador" class="form-select form-control-modern">
+                                    <option value="">-- Selecione um aluno disponível --</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <button id="btnVincularAluno"
+                                    class="btn btn-modern btn-modern-primary w-100 shadow-sm">Vincular Agora</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -125,11 +166,11 @@
     <script>
         var ajaxAtivo = 0;
         $.ajaxSetup({
-            beforeSend: function() {
+            beforeSend: function () {
                 ajaxAtivo++;
                 $('button, .btn').prop('disabled', true);
             },
-            complete: function() {
+            complete: function () {
                 ajaxAtivo--;
                 if (ajaxAtivo <= 0) {
                     ajaxAtivo = 0;
@@ -139,11 +180,11 @@
         });
 
         // Verificar se e ADM
-        $(document).ready(function() {
+        $(document).ready(function () {
             $.ajax({
                 url: '/usuario',
                 type: 'GET',
-                success: function(response) {
+                success: function (response) {
                     if (response.ao_tipo !== 'ADM') {
                         window.location.href = '/alunos.html';
                         return;
@@ -151,7 +192,7 @@
                     carregarExercicios();
                     carregarTreinadores();
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     if (xhr.status === 401) window.location.href = '/index.html';
                 }
             });
@@ -163,7 +204,7 @@
             $.ajax({
                 url: '/admin/exercicios-academia',
                 type: 'GET',
-                success: function(response) {
+                success: function (response) {
                     var tbody = $('#tabelaExAcademia');
                     tbody.empty();
                     if (response.exercicios.length === 0) {
@@ -171,20 +212,19 @@
                         return;
                     }
                     $('#semExAcademia').addClass('d-none');
-                    response.exercicios.forEach(function(ex) {
+                    response.exercicios.forEach(function (ex) {
                         var urlCell = ex.tx_url
-                            ? '<a href="' + ex.tx_url + '" target="_blank" title="' + ex.tx_url + '"><i class="bi bi-box-arrow-up-right"></i></a>'
+                            ? '<a href="' + ex.tx_url + '" target="_blank" class="btn btn-sm btn-modern btn-modern-outline py-0 px-2" title="' + ex.tx_url + '"><i class="bi bi-play-circle"></i></a>'
                             : '-';
                         tbody.append(
                             '<tr data-id="' + ex.id_exercicio + '">' +
-                            '<td>' + ex.no_exercicio + '</td>' +
-                            '<td class="text-center">' + urlCell + '</td>' +
-                            '<td class="text-center">' + (ex.qt_calorias || '-') + '</td>' +
+                            '<td class="ps-4 fw-medium text-dark">' + ex.no_exercicio + '</td>' +
                             '<td>' + (ex.no_musculo || '-') + '</td>' +
-                            '<td>' + (ex.no_treino || '-') + '</td>' +
-                            '<td class="text-center">' +
-                            '<button class="btn btn-sm btn-outline-primary btn-editar-exa me-1"><i class="bi bi-pencil-square"></i></button>' +
-                            '<button class="btn btn-sm btn-outline-danger btn-excluir-exa"><i class="bi bi-trash"></i></button>' +
+                            '<td class="text-center"><span class="badge rounded-pill bg-light text-dark border fw-normal">' + (ex.qt_calorias || 0) + ' kcal</span></td>' +
+                            '<td class="text-center">' + urlCell + '</td>' +
+                            '<td class="text-center text-nowrap pe-4">' +
+                            '<button class="btn btn-sm btn-modern btn-modern-outline py-1 px-2 btn-editar-exa me-1" title="Editar"><i class="bi bi-pencil"></i></button>' +
+                            '<button class="btn btn-sm btn-modern btn-modern-outline py-1 px-2 text-danger btn-excluir-exa" title="Excluir"><i class="bi bi-trash"></i></button>' +
                             '</td>' +
                             '</tr>'
                         );
@@ -195,7 +235,7 @@
 
         var editandoExAcademia = false;
 
-        $('#btnNovoExAcademia').on('click', function() {
+        $('#btnNovoExAcademia').on('click', function () {
             editandoExAcademia = false;
             $('#exAcademiaId').val('');
             $('#exAcademiaNome').val('');
@@ -207,11 +247,11 @@
             $('#exAcademiaNome').focus();
         });
 
-        $('#btnCancelarExAcademia').on('click', function() {
+        $('#btnCancelarExAcademia').on('click', function () {
             $('#formExAcademia').addClass('d-none');
         });
 
-        $(document).on('click', '.btn-editar-exa', function() {
+        $(document).on('click', '.btn-editar-exa', function () {
             var row = $(this).closest('tr');
             editandoExAcademia = true;
             $('#exAcademiaId').val(row.data('id'));
@@ -229,7 +269,7 @@
             $('#exAcademiaNome').focus();
         });
 
-        $(document).on('click', '.btn-excluir-exa', function() {
+        $(document).on('click', '.btn-excluir-exa', function () {
             var row = $(this).closest('tr');
             var id = row.data('id');
             var nome = row.find('td').eq(0).text();
@@ -237,17 +277,17 @@
             $.ajax({
                 url: '/admin/exercicios-academia/' + id,
                 type: 'DELETE',
-                success: function() {
+                success: function () {
                     carregarExercicios();
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao excluir";
                     alert(msg);
                 }
             });
         });
 
-        $('#btnSalvarExAcademia').on('click', function() {
+        $('#btnSalvarExAcademia').on('click', function () {
             var nome = $('#exAcademiaNome').val().trim();
             if (!nome) {
                 $('#alertExercicios').removeClass('d-none alert-success').addClass('alert-danger').text('Informe o nome do exercicio.');
@@ -268,13 +308,13 @@
                     type: 'PUT',
                     contentType: 'application/json',
                     data: JSON.stringify(dados),
-                    success: function() {
+                    success: function () {
                         $('#formExAcademia').addClass('d-none');
                         $('#alertExercicios').removeClass('d-none alert-danger').addClass('alert-success').text('Exercicio atualizado!');
-                        setTimeout(function() { $('#alertExercicios').addClass('d-none'); }, 2000);
+                        setTimeout(function () { $('#alertExercicios').addClass('d-none'); }, 2000);
                         carregarExercicios();
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao atualizar";
                         $('#alertExercicios').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
                     }
@@ -285,13 +325,13 @@
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(dados),
-                    success: function() {
+                    success: function () {
                         $('#formExAcademia').addClass('d-none');
                         $('#alertExercicios').removeClass('d-none alert-danger').addClass('alert-success').text('Exercicio criado!');
-                        setTimeout(function() { $('#alertExercicios').addClass('d-none'); }, 2000);
+                        setTimeout(function () { $('#alertExercicios').addClass('d-none'); }, 2000);
                         carregarExercicios();
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao criar";
                         $('#alertExercicios').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
                     }
@@ -305,17 +345,17 @@
             $.ajax({
                 url: '/admin/treinadores',
                 type: 'GET',
-                success: function(response) {
+                success: function (response) {
                     var sel = $('#selectTreinador');
                     sel.html('<option value="">-- Selecione --</option>');
-                    response.treinadores.forEach(function(t) {
+                    response.treinadores.forEach(function (t) {
                         sel.append('<option value="' + t.id_usuario + '">' + t.no_usuario + ' (' + (t.tx_email || '') + ')</option>');
                     });
                 }
             });
         }
 
-        $('#selectTreinador').on('change', function() {
+        $('#selectTreinador').on('change', function () {
             var id = $(this).val();
             if (!id) {
                 $('#divAlunosTreinador').addClass('d-none');
@@ -330,7 +370,7 @@
             $.ajax({
                 url: '/admin/treinadores/' + idTreinador + '/alunos',
                 type: 'GET',
-                success: function(response) {
+                success: function (response) {
                     var lista = $('#listaAlunosTreinador');
                     lista.empty();
                     if (response.alunos.length === 0) {
@@ -338,11 +378,11 @@
                         return;
                     }
                     $('#semAlunosTreinador').addClass('d-none');
-                    response.alunos.forEach(function(a) {
+                    response.alunos.forEach(function (a) {
                         lista.append(
-                            '<div class="list-group-item d-flex justify-content-between align-items-center">' +
-                            '<div><i class="bi bi-person"></i> ' + a.no_usuario + ' <small class="text-muted">(' + (a.tx_email || '') + ')</small></div>' +
-                            '<button class="btn btn-sm btn-outline-danger btn-desvincular-admin" data-id-usuario="' + a.id_usuario + '"><i class="bi bi-person-x"></i> Desvincular</button>' +
+                            '<div class="list-group-item d-flex justify-content-between align-items-center py-3 border-0 border-bottom px-4">' +
+                            '<div><i class="bi bi-person text-primary me-3"></i> ' + a.no_usuario + ' <small class="text-muted ms-2">(' + (a.tx_email || '') + ')</small></div>' +
+                            '<button class="btn btn-sm btn-modern btn-modern-outline text-danger btn-desvincular-admin" data-id-usuario="' + a.id_usuario + '"><i class="bi bi-person-x me-1"></i> Desvincular</button>' +
                             '</div>'
                         );
                     });
@@ -354,37 +394,37 @@
             $.ajax({
                 url: '/admin/usuarios-sem-treinador',
                 type: 'GET',
-                success: function(response) {
+                success: function (response) {
                     var sel = $('#selectAlunoSemTreinador');
                     sel.html('<option value="">-- Selecione um aluno --</option>');
-                    response.usuarios.forEach(function(u) {
+                    response.usuarios.forEach(function (u) {
                         sel.append('<option value="' + u.id_usuario + '">' + u.no_usuario + ' (' + (u.tx_email || '') + ')</option>');
                     });
                 }
             });
         }
 
-        $(document).on('click', '.btn-desvincular-admin', function() {
+        $(document).on('click', '.btn-desvincular-admin', function () {
             var idUsuario = $(this).data('id-usuario');
             var idTreinador = $('#selectTreinador').val();
             if (!confirm('Desvincular este aluno do treinador?')) return;
             $.ajax({
                 url: '/admin/vincular/' + idUsuario + '/' + idTreinador,
                 type: 'DELETE',
-                success: function() {
+                success: function () {
                     $('#alertVinculos').removeClass('d-none alert-danger').addClass('alert-success').text('Vinculo removido!');
-                    setTimeout(function() { $('#alertVinculos').addClass('d-none'); }, 2000);
+                    setTimeout(function () { $('#alertVinculos').addClass('d-none'); }, 2000);
                     carregarAlunosTreinador(idTreinador);
                     carregarUsuariosSemTreinador();
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao desvincular";
                     $('#alertVinculos').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
                 }
             });
         });
 
-        $('#btnVincularAluno').on('click', function() {
+        $('#btnVincularAluno').on('click', function () {
             var idAluno = $('#selectAlunoSemTreinador').val();
             var idTreinador = $('#selectTreinador').val();
             if (!idAluno) {
@@ -396,13 +436,13 @@
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ id_usuario: Number(idAluno), id_treinador: Number(idTreinador) }),
-                success: function() {
+                success: function () {
                     $('#alertVinculos').removeClass('d-none alert-danger').addClass('alert-success').text('Aluno vinculado com sucesso!');
-                    setTimeout(function() { $('#alertVinculos').addClass('d-none'); }, 2000);
+                    setTimeout(function () { $('#alertVinculos').addClass('d-none'); }, 2000);
                     carregarAlunosTreinador(idTreinador);
                     carregarUsuariosSemTreinador();
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao vincular";
                     $('#alertVinculos').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
                 }
@@ -410,4 +450,5 @@
         });
     </script>
 </body>
+
 </html>

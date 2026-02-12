@@ -1,87 +1,111 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="/favicon.png?v=2">
     <title>Agenda</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
 </head>
+
 <body>
-    <nav class="navbar navbar-dark bg-dark mb-4">
+    <nav class="navbar navbar-expand-lg navbar-modern sticky-top mb-4">
         <div class="container-fluid">
-            <span class="navbar-brand">Sistema de Treinos</span>
-            <div>
-                <a id="btnAlunos" href="/alunos.html" class="btn btn-outline-light btn-sm me-2 d-none"><i class="bi bi-people"></i> Alunos</a>
-                <a id="btnAgenda" href="/agenda.html" class="btn btn-outline-light btn-sm me-2 active"><i class="bi bi-calendar-week"></i> Agenda</a>
-                <a id="btnAdmin" href="/admin.html" class="btn btn-outline-warning btn-sm me-2 d-none" title="Admin"><i class="bi bi-gear"></i> Admin</a>
-                <a href="/conta.html" class="btn btn-outline-light btn-sm me-2" title="Minha Conta"><i class="bi bi-person-circle"></i></a>
-                <button id="btnSair" class="btn btn-outline-light btn-sm">Sair</button>
+            <a class="navbar-brand fw-bold text-primary" href="/treinos.html">
+                <i class="bi bi-lightning-charge-fill me-2"></i>Sistema de Treinos
+            </a>
+            <div class="d-flex align-items-center">
+                <a id="btnAlunos" href="/alunos.html" class="btn btn-modern btn-modern-outline btn-sm me-2 d-none"><i
+                        class="bi bi-people"></i> Alunos</a>
+                <a id="btnAgenda" href="/agenda.html" class="btn btn-modern btn-modern-primary btn-sm me-2 active"><i
+                        class="bi bi-calendar-week"></i> Agenda</a>
+                <a id="btnAdmin" href="/admin.html"
+                    class="btn btn-modern btn-modern-outline btn-sm me-2 d-none text-warning" title="Admin"><i
+                        class="bi bi-gear"></i></a>
+                <a href="/conta.html" class="btn btn-modern btn-modern-outline btn-sm me-2" title="Minha Conta"><i
+                        class="bi bi-person-circle"></i></a>
+                <button id="btnSair" class="btn btn-modern btn-modern-primary btn-sm">Sair</button>
             </div>
         </div>
     </nav>
 
-    <div class="container-fluid">
+    <div class="container">
         <!-- Badge gerenciando aluno -->
-        <div id="badgeGerenciando" class="alert alert-info d-flex justify-content-between align-items-center d-none mb-3">
-            <span><i class="bi bi-person"></i> Gerenciando: <strong id="nomeAlunoGerenciado"></strong></span>
-            <a id="btnVoltarAlunos" href="/alunos.html" class="btn btn-sm btn-outline-primary"><i class="bi bi-arrow-left"></i> Voltar para alunos</a>
+        <div id="badgeGerenciando"
+            class="alert bg-primary-subtle border-0 d-flex justify-content-between align-items-center d-none mb-4 rounded-4 px-4 py-3">
+            <span class="text-primary"><i class="bi bi-person-badge me-2"></i>Gerenciando: <strong
+                    id="nomeAlunoGerenciado"></strong></span>
+            <a id="btnVoltarAlunos" href="/alunos.html" class="btn btn-sm btn-modern btn-modern-primary"><i
+                    class="bi bi-arrow-left"></i> Voltar</a>
         </div>
 
-        <div class="text-center mb-4">
-            <button id="btnNovaAgenda" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#modalAgenda"><i class="bi bi-plus-lg"></i> Nova Agenda</button>
+        <div class="text-center mb-5">
+            <button id="btnNovaAgenda" class="btn btn-modern btn-modern-primary btn-lg px-5 shadow-sm"
+                data-bs-toggle="modal" data-bs-target="#modalAgenda">
+                <i class="bi bi-plus-lg"></i> Novo Agendamento
+            </button>
         </div>
 
         <div id="alertAgenda" class="alert d-none mt-3"></div>
 
         <div id="tabelaContainer" class="d-none">
-            <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Data</th>
-                            <th>Treino</th>
-                            <th class="d-none d-md-table-cell">Observacao</th>
-                            <th style="width: 160px;"></th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabelaAgenda">
-                    </tbody>
-                </table>
+            <div class="card-modern">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4 text-uppercase small fw-bold text-muted">Data</th>
+                                <th class="text-uppercase small fw-bold text-muted">Treino</th>
+                                <th class="d-none d-md-table-cell text-uppercase small fw-bold text-muted">Observação
+                                </th>
+                                <th class="pe-4 text-center text-uppercase small fw-bold text-muted"
+                                    style="width: 200px;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaAgenda">
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Modal Nova/Editar Agenda -->
     <div class="modal fade" id="modalAgenda" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="tituloModalAgenda">Nova Agenda</h5>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold" id="tituloModalAgenda">Novo Agendamento</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
-                    <div id="alertModal" class="alert d-none"></div>
+                <div class="modal-body p-4">
+                    <div id="alertModal" class="alert d-none rounded-3"></div>
                     <input type="hidden" id="editIdAgenda">
                     <div class="mb-3">
-                        <label class="form-label">Data</label>
-                        <input type="date" id="agendaData" class="form-control" required>
+                        <label class="form-label small fw-bold text-muted">Data</label>
+                        <input type="date" id="agendaData" class="form-control form-control-modern" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Treino</label>
-                        <select id="agendaTreino" class="form-select" required>
+                        <label class="form-label small fw-bold text-muted">Treino</label>
+                        <select id="agendaTreino" class="form-select form-control-modern" required>
                             <option value="">-- Selecione --</option>
                         </select>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Observacao</label>
-                        <textarea id="agendaObs" class="form-control" rows="3"></textarea>
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-muted">Observação</label>
+                        <textarea id="agendaObs" class="form-control form-control-modern" rows="3"
+                            placeholder="Opcional..."></textarea>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" id="btnSalvarAgenda" class="btn btn-success">Salvar</button>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-modern btn-modern-outline w-100"
+                            data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" id="btnSalvarAgenda"
+                            class="btn btn-modern btn-modern-primary w-100">Salvar</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -89,23 +113,25 @@
 
     <!-- Modal Clonar -->
     <div class="modal fade" id="modalClonar" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Clonar Agendamento</h5>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Clonar Agendamento</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
-                    <div id="alertClonar" class="alert d-none"></div>
+                <div class="modal-body p-4">
+                    <div id="alertClonar" class="alert d-none rounded-3"></div>
                     <input type="hidden" id="clonarIdAgenda">
-                    <div class="mb-3">
-                        <label class="form-label">Nova Data</label>
-                        <input type="date" id="clonarData" class="form-control" required>
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-muted">Nova Data</label>
+                        <input type="date" id="clonarData" class="form-control form-control-modern" required>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" id="btnConfirmarClonar" class="btn btn-primary">Clonar</button>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-modern btn-modern-outline w-100"
+                            data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" id="btnConfirmarClonar"
+                            class="btn btn-modern btn-modern-primary w-100">Clonar</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -113,27 +139,30 @@
 
     <!-- Modal Repetir -->
     <div class="modal fade" id="modalRepetir" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Repetir Agendamento (Semanal)</h5>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Repetir Agendamento</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
-                    <div id="alertRepetir" class="alert d-none"></div>
+                <div class="modal-body p-4">
+                    <div id="alertRepetir" class="alert d-none rounded-3"></div>
                     <input type="hidden" id="repetirIdAgenda">
                     <div class="mb-3">
-                        <label class="form-label">Data Inicio</label>
-                        <input type="date" id="repetirData" class="form-control" required>
+                        <label class="form-label small fw-bold text-muted">Data Início</label>
+                        <input type="date" id="repetirData" class="form-control form-control-modern" required>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Quantidade de Repeticoes (a cada 7 dias)</label>
-                        <input type="number" id="repetirQtd" class="form-control" min="1" max="52" value="4" required>
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-muted">Quantidade de Repetições (semanal)</label>
+                        <input type="number" id="repetirQtd" class="form-control form-control-modern" min="1" max="52"
+                            value="4" required>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" id="btnConfirmarRepetir" class="btn btn-primary">Repetir</button>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-modern btn-modern-outline w-100"
+                            data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" id="btnConfirmarRepetir"
+                            class="btn btn-modern btn-modern-primary w-100">Confirmar</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -162,10 +191,10 @@
             $.ajax({
                 url: '/treinos' + getQueryParam(),
                 type: 'GET',
-                success: function(response) {
+                success: function (response) {
                     var sel = $('#agendaTreino');
                     sel.html('<option value="">-- Selecione --</option>');
-                    response.treinos.forEach(function(t) {
+                    response.treinos.forEach(function (t) {
                         sel.append('<option value="' + t.id_treino + '">' + t.no_treino + '</option>');
                     });
                 }
@@ -176,7 +205,7 @@
             $.ajax({
                 url: '/agenda' + getQueryParam(),
                 type: 'GET',
-                success: function(response) {
+                success: function (response) {
                     var tbody = $('#tabelaAgenda');
                     tbody.empty();
                     if (response.agendas.length === 0) {
@@ -185,26 +214,26 @@
                         return;
                     }
                     $('#alertAgenda').addClass('d-none');
-                    response.agendas.forEach(function(ag) {
+                    response.agendas.forEach(function (ag) {
                         var hoje = new Date().toISOString().split('T')[0];
-                        var classeData = ag.dt_treino < hoje ? 'text-muted' : (ag.dt_treino === hoje ? 'fw-bold text-success' : '');
+                        var classeData = ag.dt_treino < hoje ? 'text-muted' : (ag.dt_treino === hoje ? 'fw-bold text-success' : 'text-dark fw-medium');
                         tbody.append(
                             '<tr data-id="' + ag.id_agenda + '" data-treino="' + ag.id_treino + '" data-data="' + ag.dt_treino + '" data-obs="' + (ag.tx_observacao || '').replace(/"/g, '&quot;') + '">' +
-                            '<td class="' + classeData + '">' + formatarData(ag.dt_treino) + '</td>' +
-                            '<td>' + (ag.no_treino || '-') + '</td>' +
-                            '<td class="d-none d-md-table-cell">' + (ag.tx_observacao || '-') + '</td>' +
-                            '<td class="text-center text-nowrap">' +
-                            '<button class="btn btn-sm btn-outline-primary btn-editar me-1" title="Editar"><i class="bi bi-pencil-square"></i></button>' +
-                            '<button class="btn btn-sm btn-outline-info btn-clonar me-1" title="Clonar"><i class="bi bi-copy"></i></button>' +
-                            '<button class="btn btn-sm btn-outline-warning btn-repetir me-1" title="Repetir semanal"><i class="bi bi-arrow-repeat"></i></button>' +
-                            '<button class="btn btn-sm btn-outline-danger btn-excluir" title="Excluir"><i class="bi bi-trash"></i></button>' +
+                            '<td class="' + classeData + ' ps-4">' + formatarData(ag.dt_treino) + '</td>' +
+                            '<td class="fw-medium">' + (ag.no_treino || '-') + '</td>' +
+                            '<td class="d-none d-md-table-cell text-muted">' + (ag.tx_observacao || '-') + '</td>' +
+                            '<td class="text-center text-nowrap pe-4">' +
+                            '<button class="btn btn-sm btn-modern btn-modern-outline py-1 px-2 btn-editar me-1" title="Editar"><i class="bi bi-pencil"></i></button>' +
+                            '<button class="btn btn-sm btn-modern btn-modern-outline py-1 px-2 btn-clonar me-1" title="Clonar"><i class="bi bi-copy"></i></button>' +
+                            '<button class="btn btn-sm btn-modern btn-modern-outline py-1 px-2 btn-repetir me-1" title="Repetir"><i class="bi bi-arrow-repeat"></i></button>' +
+                            '<button class="btn btn-sm btn-modern btn-modern-outline py-1 px-2 text-danger btn-excluir" title="Excluir"><i class="bi bi-trash"></i></button>' +
                             '</td>' +
                             '</tr>'
                         );
                     });
                     $('#tabelaContainer').removeClass('d-none');
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     if (xhr.status === 401) { window.location.href = '/index.html'; return; }
                     var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao buscar agenda";
                     $('#alertAgenda').removeClass('d-none alert-info').addClass('alert-danger').text(msg);
@@ -213,11 +242,11 @@
         }
 
         // Abrir modal para nova agenda
-        document.getElementById('modalAgenda').addEventListener('show.bs.modal', function() {
+        document.getElementById('modalAgenda').addEventListener('show.bs.modal', function () {
             carregarTreinos();
         });
 
-        $('#btnNovaAgenda').on('click', function() {
+        $('#btnNovaAgenda').on('click', function () {
             $('#tituloModalAgenda').text('Nova Agenda');
             $('#editIdAgenda').val('');
             $('#agendaData').val('');
@@ -227,7 +256,7 @@
         });
 
         // Salvar (criar ou editar)
-        $('#btnSalvarAgenda').on('click', function() {
+        $('#btnSalvarAgenda').on('click', function () {
             var idAgenda = $('#editIdAgenda').val();
             var dados = {
                 id_treino: Number($('#agendaTreino').val()),
@@ -245,15 +274,15 @@
                 type: method,
                 contentType: 'application/json',
                 data: JSON.stringify(dados),
-                success: function(response) {
+                success: function (response) {
                     $('#alertModal').removeClass('d-none alert-danger').addClass('alert-success').text(response.message);
-                    setTimeout(function() {
+                    setTimeout(function () {
                         bootstrap.Modal.getInstance(document.getElementById('modalAgenda')).hide();
                         $('#alertModal').addClass('d-none');
                         listarAgenda();
                     }, 800);
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     if (xhr.status === 401) { window.location.href = '/index.html'; return; }
                     var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao salvar agendamento";
                     $('#alertModal').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
@@ -262,7 +291,7 @@
         });
 
         // Editar
-        $(document).on('click', '.btn-editar', function() {
+        $(document).on('click', '.btn-editar', function () {
             var row = $(this).closest('tr');
             $('#tituloModalAgenda').text('Editar Agenda');
             $('#editIdAgenda').val(row.data('id'));
@@ -270,24 +299,24 @@
             $('#agendaObs').val(row.data('obs'));
             $('#alertModal').addClass('d-none');
             carregarTreinos();
-            setTimeout(function() {
+            setTimeout(function () {
                 $('#agendaTreino').val(row.data('treino'));
             }, 300);
             new bootstrap.Modal(document.getElementById('modalAgenda')).show();
         });
 
         // Excluir
-        $(document).on('click', '.btn-excluir', function() {
+        $(document).on('click', '.btn-excluir', function () {
             var row = $(this).closest('tr');
             var idAgenda = row.data('id');
             if (!confirm('Excluir este agendamento?')) return;
             $.ajax({
                 url: '/agenda/' + idAgenda + getQueryParam(),
                 type: 'DELETE',
-                success: function() {
+                success: function () {
                     listarAgenda();
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     if (xhr.status === 401) { window.location.href = '/index.html'; return; }
                     var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao excluir agendamento";
                     alert(msg);
@@ -296,7 +325,7 @@
         });
 
         // Clonar
-        $(document).on('click', '.btn-clonar', function() {
+        $(document).on('click', '.btn-clonar', function () {
             var row = $(this).closest('tr');
             $('#clonarIdAgenda').val(row.data('id'));
             $('#clonarData').val('');
@@ -304,7 +333,7 @@
             new bootstrap.Modal(document.getElementById('modalClonar')).show();
         });
 
-        $('#btnConfirmarClonar').on('click', function() {
+        $('#btnConfirmarClonar').on('click', function () {
             var idAgenda = $('#clonarIdAgenda').val();
             var novaData = $('#clonarData').val();
             if (!novaData) {
@@ -316,14 +345,14 @@
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ dt_treino: novaData }),
-                success: function(response) {
+                success: function (response) {
                     $('#alertClonar').removeClass('d-none alert-danger').addClass('alert-success').text(response.message);
-                    setTimeout(function() {
+                    setTimeout(function () {
                         bootstrap.Modal.getInstance(document.getElementById('modalClonar')).hide();
                         listarAgenda();
                     }, 800);
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     if (xhr.status === 401) { window.location.href = '/index.html'; return; }
                     var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao clonar agendamento";
                     $('#alertClonar').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
@@ -332,7 +361,7 @@
         });
 
         // Repetir
-        $(document).on('click', '.btn-repetir', function() {
+        $(document).on('click', '.btn-repetir', function () {
             var row = $(this).closest('tr');
             $('#repetirIdAgenda').val(row.data('id'));
             $('#repetirData').val('');
@@ -341,7 +370,7 @@
             new bootstrap.Modal(document.getElementById('modalRepetir')).show();
         });
 
-        $('#btnConfirmarRepetir').on('click', function() {
+        $('#btnConfirmarRepetir').on('click', function () {
             var idAgenda = $('#repetirIdAgenda').val();
             var dataInicio = $('#repetirData').val();
             var qtd = Number($('#repetirQtd').val());
@@ -354,14 +383,14 @@
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ dt_treino: dataInicio, qt_repeticoes: qtd }),
-                success: function(response) {
+                success: function (response) {
                     $('#alertRepetir').removeClass('d-none alert-danger').addClass('alert-success').text(response.message);
-                    setTimeout(function() {
+                    setTimeout(function () {
                         bootstrap.Modal.getInstance(document.getElementById('modalRepetir')).hide();
                         listarAgenda();
                     }, 800);
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     if (xhr.status === 401) { window.location.href = '/index.html'; return; }
                     var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao repetir agendamento";
                     $('#alertRepetir').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
@@ -370,11 +399,12 @@
         });
 
         // Inicializar
-        $(document).ready(function() {
-            inicializar(function() {
+        $(document).ready(function () {
+            inicializar(function () {
                 listarAgenda();
             });
         });
     </script>
 </body>
+
 </html>

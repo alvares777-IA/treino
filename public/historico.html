@@ -5,89 +5,103 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="/favicon.png?v=2">
-    <title>Historico de Treinos</title>
+    <title>Histórico de Treinos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
 </head>
 
 <body>
-    <nav class="navbar navbar-dark bg-dark mb-4">
+    <nav class="navbar navbar-expand-lg navbar-modern sticky-top mb-4">
         <div class="container-fluid">
-            <span class="navbar-brand"><i class="bi bi-clock-history"></i> Historico de Treinos</span>
-            <a href="/treinos.html" class="btn btn-outline-light btn-sm">Voltar</a>
+            <a class="navbar-brand fw-bold text-primary" href="/treinos.html">
+                <i class="bi bi-clock-history me-2"></i>Histórico de Treinos
+            </a>
+            <a href="/treinos.html" class="btn btn-modern btn-modern-outline btn-sm">Voltar</a>
         </div>
     </nav>
 
-    <div class="container-fluid">
-        <div id="alertHistorico" class="alert d-none"></div>
+    <div class="container">
+        <div id="alertHistorico" class="alert d-none rounded-3"></div>
 
-        <div class="row g-2 align-items-end mb-3">
-            <div class="col-auto">
-                <label class="form-label small mb-1">De</label>
-                <input type="date" id="filtroInicio" class="form-control form-control-sm">
-            </div>
-            <div class="col-auto">
-                <label class="form-label small mb-1">Até</label>
-                <input type="date" id="filtroFim" class="form-control form-control-sm">
-            </div>
-            <div class="col-auto">
-                <button id="btnConsultar" class="btn btn-primary btn-sm"><i class="bi bi-search"></i> Consultar</button>
+        <div class="card-modern p-4 mb-4">
+            <h6 class="fw-bold mb-3 text-uppercase small text-muted">Filtrar por Período</h6>
+            <div class="row g-3 align-items-end">
+                <div class="col-12 col-md-4">
+                    <label class="form-label small fw-medium">De</label>
+                    <input type="date" id="filtroInicio" class="form-control form-control-modern">
+                </div>
+                <div class="col-12 col-md-4">
+                    <label class="form-label small fw-medium">Até</label>
+                    <input type="date" id="filtroFim" class="form-control form-control-modern">
+                </div>
+                <div class="col-12 col-md-4">
+                    <button id="btnConsultar" class="btn btn-modern btn-modern-primary w-100 py-2 shadow-sm"><i
+                            class="bi bi-search"></i> Consultar</button>
+                </div>
             </div>
         </div>
 
         <div id="tabelaContainer" class="d-none">
-            <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Data / Hora</th>
-                            <th>Treino</th>
-                            <th>Exercicio</th>
-                            <th>Series</th>
-                            <th>Reps</th>
-                            <th>Peso</th>
-                            <th>Calorias</th>
-                            <th style="width:100px;">Acoes</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabelaHistorico">
-                    </tbody>
-                </table>
+            <div class="card-modern">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4 text-uppercase small fw-bold text-muted">Data / Hora</th>
+                                <th class="text-uppercase small fw-bold text-muted">Treino</th>
+                                <th class="text-uppercase small fw-bold text-muted">Exercício</th>
+                                <th class="text-uppercase small fw-bold text-muted">Séries</th>
+                                <th class="text-uppercase small fw-bold text-muted">Reps</th>
+                                <th class="text-uppercase small fw-bold text-muted">Peso</th>
+                                <th class="text-uppercase small fw-bold text-muted">Calorias</th>
+                                <th class="pe-4 text-center text-uppercase small fw-bold text-muted"
+                                    style="width:120px;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaHistorico">
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Modal Editar Registro -->
     <div class="modal fade" id="modalEditarRegistro" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Editar Registro</h5>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Editar Registro</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
-                    <div id="alertEditarRegistro" class="alert d-none"></div>
+                <div class="modal-body p-4">
+                    <div id="alertEditarRegistro" class="alert d-none rounded-3"></div>
                     <input type="hidden" id="editRegistroId">
                     <div class="mb-3">
-                        <label class="form-label">Series</label>
-                        <input type="number" id="editRegistroSeries" class="form-control" min="0">
+                        <label class="form-label small fw-bold text-muted">Séries</label>
+                        <input type="number" id="editRegistroSeries" class="form-control form-control-modern" min="0">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Repeticoes</label>
-                        <input type="number" id="editRegistroReps" class="form-control" min="0">
+                        <label class="form-label small fw-bold text-muted">Repetições</label>
+                        <input type="number" id="editRegistroReps" class="form-control form-control-modern" min="0">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Peso (kg)</label>
-                        <input type="number" id="editRegistroPeso" class="form-control" min="0" step="0.5">
+                        <label class="form-label small fw-bold text-muted">Peso (kg)</label>
+                        <input type="number" id="editRegistroPeso" class="form-control form-control-modern" min="0"
+                            step="0.5">
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Calorias</label>
-                        <input type="number" id="editRegistroCalorias" class="form-control" min="0">
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-muted">Calorias</label>
+                        <input type="number" id="editRegistroCalorias" class="form-control form-control-modern" min="0">
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" id="btnSalvarRegistro" class="btn btn-primary">Salvar</button>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-modern btn-modern-outline w-100"
+                            data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" id="btnSalvarRegistro"
+                            class="btn btn-modern btn-modern-primary w-100">Salvar</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -96,21 +110,6 @@
     <script src="/lib/jquery/jquery-3.6.0.min.js"></script>
     <script src="/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script>
-        var ajaxAtivo = 0;
-        $.ajaxSetup({
-            beforeSend: function () {
-                ajaxAtivo++;
-                $('button, .btn').prop('disabled', true);
-            },
-            complete: function () {
-                ajaxAtivo--;
-                if (ajaxAtivo <= 0) {
-                    ajaxAtivo = 0;
-                    $('button, .btn').prop('disabled', false);
-                }
-            }
-        });
-
         var params = new URLSearchParams(window.location.search);
         var idUsuario = params.get('id_usuario');
         var queryParam = idUsuario ? '?id_usuario=' + idUsuario : '';
@@ -122,136 +121,146 @@
             $('a[href="/treinos.html"]').attr('href', '/treinos.html?id_usuario=' + idUsuario + (nome ? '&nome=' + encodeURIComponent(nome) : ''));
         }
 
-        // Default: ultimos 7 dias
-        var hoje = new Date();
-        var seteDiasAtras = new Date();
-        seteDiasAtras.setDate(hoje.getDate() - 7);
         function formatDate(d) {
             return d.toISOString().substring(0, 10);
         }
-        $('#filtroInicio').val(formatDate(seteDiasAtras));
-        $('#filtroFim').val(formatDate(hoje));
 
         function carregarHistorico() {
             var dtInicio = $('#filtroInicio').val();
             var dtFim = $('#filtroFim').val();
-            var sep = queryParam ? '&' : '?';
-            var urlFiltro = '/treino-dia' + queryParam + (dtInicio ? sep + 'dt_inicio=' + dtInicio : '') + (dtFim ? (queryParam || dtInicio ? '&' : '?') + 'dt_fim=' + dtFim : '');
+
+            // Construir URL de forma robusta
+            var url = '/treino-dia';
+            var params = [];
+            if (idUsuario) params.push('id_usuario=' + idUsuario);
+            if (dtInicio) params.push('dt_inicio=' + dtInicio);
+            if (dtFim) params.push('dt_fim=' + dtFim);
+
+            if (params.length > 0) {
+                url += '?' + params.join('&');
+            }
+
             $.ajax({
-                url: urlFiltro,
+                url: url,
                 type: 'GET',
                 success: function (response) {
                     var tbody = $('#tabelaHistorico');
                     tbody.empty();
-                    if (response.historico.length === 0) {
-                        $('#alertHistorico').removeClass('d-none alert-danger').addClass('alert-info').text('Nenhum treino registrado ainda.');
+                    $('#alertHistorico').addClass('d-none');
+
+                    if (!response.historico || response.historico.length === 0) {
+                        $('#alertHistorico').removeClass('d-none alert-danger').addClass('alert-info').text('Nenhum registro encontrado no período.');
                         $('#tabelaContainer').addClass('d-none');
                         return;
                     }
+
+                    $('#tabelaContainer').removeClass('d-none');
                     var totalGeral = 0;
-                    var totalDia = 0;
-                    var totalTreino = 0;
-                    var diaAtual = null;
-                    var treinoAtual = null;
-                    var nomeTreinoAtual = '';
-                    var numCols = 8;
+                    var subtotalSessao = 0;
+                    var sessaoAtual = null;
 
-                    response.historico.forEach(function (item, idx) {
-                        var dia = item.dt_treino ? item.dt_treino.substring(0, 10) : '';
-                        var chaveTreino = dia + '|' + item.id_treino;
-                        var calExercicio = item.qt_calorias || 0;
+                    response.historico.forEach(function (item) {
+                        // Agrupar por data e treino (Sessão)
+                        // item.dt_treino vem formatado do banco: 'DD/MM/YYYY HH24:MI'
+                        var dataSessao = item.dt_treino ? item.dt_treino.substring(0, 10) : '';
+                        var chaveSessao = dataSessao + '|' + item.id_treino;
 
-                        // Quebra de treino (mesmo dia, treino diferente) ou quebra de dia
-                        if (treinoAtual !== null && treinoAtual !== chaveTreino) {
-                            tbody.append(
-                                '<tr class="table-info fw-bold"><td colspan="6" class="text-end">Subtotal ' + nomeTreinoAtual + ':</td><td class="text-center">' + totalTreino + '</td><td></td></tr>'
-                            );
-                            totalTreino = 0;
+                        if (sessaoAtual !== null && sessaoAtual !== chaveSessao) {
+                            renderSubtotal(tbody, subtotalSessao);
+                            subtotalSessao = 0;
                         }
 
-                        // Quebra de dia
-                        if (diaAtual !== null && diaAtual !== dia) {
-                            tbody.append(
-                                '<tr class="table-warning fw-bold"><td colspan="6" class="text-end">Total do dia ' + diaAtual + ':</td><td class="text-center">' + totalDia + '</td><td></td></tr>'
-                            );
-                            totalDia = 0;
-                        }
-
-                        diaAtual = dia;
-                        treinoAtual = chaveTreino;
-                        nomeTreinoAtual = item.no_treino;
-
-                        totalTreino += calExercicio;
-                        totalDia += calExercicio;
-                        totalGeral += calExercicio;
+                        sessaoAtual = chaveSessao;
+                        var calEx = item.qt_calorias || 0;
+                        subtotalSessao += calEx;
+                        totalGeral += calEx;
 
                         var acoes = '';
                         if (isProprioUsuario && item.id_treino_dia) {
                             acoes =
-                                '<button class="btn btn-sm btn-outline-primary btn-editar-reg me-1" data-id="' + item.id_treino_dia + '" data-series="' + (item.qt_series || '') + '" data-reps="' + (item.qt_repeticao || '') + '" data-peso="' + (item.nr_peso || '') + '" data-calorias="' + (item.qt_calorias || '') + '"><i class="bi bi-pencil-square"></i></button>' +
-                                '<button class="btn btn-sm btn-outline-danger btn-excluir-reg" data-id="' + item.id_treino_dia + '"><i class="bi bi-trash"></i></button>';
+                                '<button class="btn btn-sm btn-modern btn-modern-outline py-1 px-2 btn-editar-reg me-1" data-id="' + item.id_treino_dia + '" data-series="' + (item.qt_series || '') + '" data-reps="' + (item.qt_repeticao || '') + '" data-peso="' + (item.nr_peso || '') + '" data-calorias="' + (item.qt_calorias || '') + '"><i class="bi bi-pencil"></i></button>' +
+                                '<button class="btn btn-sm btn-modern btn-modern-outline py-1 px-2 text-danger btn-excluir-reg" data-id="' + item.id_treino_dia + '"><i class="bi bi-trash"></i></button>';
                         }
+
                         tbody.append(
-                            '<tr data-id="' + (item.id_treino_dia || '') + '">' +
-                            '<td>' + item.dt_treino + '</td>' +
-                            '<td>' + item.no_treino + '</td>' +
+                            '<tr data-id="' + item.id_treino_dia + '">' +
+                            '<td class="ps-4 small text-muted">' + (item.dt_treino || '-') + '</td>' +
+                            '<td class="fw-medium">' + item.no_treino + '</td>' +
                             '<td>' + (item.no_exercicio || '-') + '</td>' +
-                            '<td>' + (item.qt_series || '-') + '</td>' +
-                            '<td>' + (item.qt_repeticao || '-') + '</td>' +
-                            '<td>' + (item.nr_peso ? item.nr_peso + ' kg' : '-') + '</td>' +
-                            '<td class="text-center">' + (calExercicio || '-') + '</td>' +
-                            '<td class="text-center">' + acoes + '</td>' +
+                            '<td class="text-center">' + (item.qt_series || '-') + '</td>' +
+                            '<td class="text-center">' + (item.qt_repeticao || '-') + '</td>' +
+                            '<td class="text-center fw-bold text-primary">' + (item.nr_peso ? item.nr_peso + 'kg' : '-') + '</td>' +
+                            '<td class="text-center"><span class="badge rounded-pill bg-light text-dark border fw-normal">' + (item.qt_calorias || 0) + ' kcal</span></td>' +
+                            '<td class="text-center text-nowrap pe-4">' + acoes + '</td>' +
                             '</tr>'
                         );
                     });
 
-                    // Subtotal do ultimo treino
-                    if (treinoAtual !== null) {
-                        tbody.append(
-                            '<tr class="table-info fw-bold"><td colspan="6" class="text-end">Subtotal ' + nomeTreinoAtual + ':</td><td class="text-center">' + totalTreino + '</td><td></td></tr>'
-                        );
+                    // Ultimo subtotal
+                    if (sessaoAtual !== null) {
+                        renderSubtotal(tbody, subtotalSessao);
                     }
-                    // Total do ultimo dia
-                    if (diaAtual !== null) {
-                        tbody.append(
-                            '<tr class="table-warning fw-bold"><td colspan="6" class="text-end">Total do dia ' + diaAtual + ':</td><td class="text-center">' + totalDia + '</td><td></td></tr>'
-                        );
-                    }
-                    // Total geral
+
+                    // Total Geral
                     tbody.append(
-                        '<tr class="table-dark fw-bold"><td colspan="6" class="text-end">TOTAL GERAL:</td><td class="text-center">' + totalGeral + '</td><td></td></tr>'
+                        '<tr class="bg-primary-subtle fw-bold">' +
+                        '<td colspan="6" class="ps-4 text-primary">TOTAL ACUMULADO NO PERÍODO</td>' +
+                        '<td class="text-center text-primary">' + totalGeral + ' kcal</td>' +
+                        '<td class="pe-4"></td>' +
+                        '</tr>'
                     );
-                    $('#tabelaContainer').removeClass('d-none');
                 },
                 error: function (xhr) {
                     if (xhr.status === 401) {
                         window.location.href = '/index.html';
                         return;
                     }
-                    var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao buscar historico";
+                    var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao buscar histórico";
                     $('#alertHistorico').removeClass('d-none alert-info').addClass('alert-danger').text(msg);
                 }
             });
         }
 
-        // Excluir registro
+        function renderSubtotal(tbody, cal) {
+            tbody.append(
+                '<tr class="bg-light bg-opacity-50 small fw-bold">' +
+                '<td colspan="6" class="ps-4 text-muted">Subtotal da sessão</td>' +
+                '<td class="text-center text-dark">' + cal + ' kcal</td>' +
+                '<td class="pe-4"></td>' +
+                '</tr>'
+            );
+        }
+
+        // Event Listeners
+        $(document).ready(function () {
+            // Default: ultimos 7 dias
+            var hoje = new Date();
+            var seteDiasAtras = new Date();
+            seteDiasAtras.setDate(hoje.getDate() - 7);
+
+            $('#filtroInicio').val(formatDate(seteDiasAtras));
+            $('#filtroFim').val(formatDate(hoje));
+
+            carregarHistorico();
+        });
+
+        $('#btnConsultar').on('click', function () {
+            carregarHistorico();
+        });
+
         $(document).on('click', '.btn-excluir-reg', function () {
             var id = $(this).data('id');
             if (!confirm('Excluir este registro?')) return;
             $.ajax({
                 url: '/treino-dia/' + id,
                 type: 'DELETE',
-                success: function () {
-                    carregarHistorico();
-                },
+                success: carregarHistorico,
                 error: function (xhr) {
-                    var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao excluir";
-                    alert(msg);
+                    alert(xhr.responseJSON ? xhr.responseJSON.message : "Erro ao excluir");
                 }
             });
         });
 
-        // Editar registro - abrir modal
         $(document).on('click', '.btn-editar-reg', function () {
             var btn = $(this);
             $('#editRegistroId').val(btn.data('id'));
@@ -263,7 +272,6 @@
             new bootstrap.Modal(document.getElementById('modalEditarRegistro')).show();
         });
 
-        // Salvar edicao
         $('#btnSalvarRegistro').on('click', function () {
             var id = $('#editRegistroId').val();
             var dados = {
@@ -286,14 +294,6 @@
                     $('#alertEditarRegistro').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
                 }
             });
-        });
-
-        $('#btnConsultar').on('click', function () {
-            carregarHistorico();
-        });
-
-        $(document).ready(function () {
-            carregarHistorico();
         });
     </script>
 </body>

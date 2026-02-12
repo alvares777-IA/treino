@@ -1,106 +1,147 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="/favicon.png?v=2">
     <title>Minha Conta</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
 </head>
+
 <body>
-    <nav class="navbar navbar-dark bg-dark mb-4">
+    <nav class="navbar navbar-expand-lg navbar-modern sticky-top mb-4">
         <div class="container-fluid">
-            <span class="navbar-brand">Sistema de Treinos</span>
-            <div>
-                <a id="btnAlunos" href="/alunos.html" class="btn btn-outline-light btn-sm me-2 d-none"><i class="bi bi-people"></i> Alunos</a>
-                <a id="btnAgenda" href="/agenda.html" class="btn btn-outline-light btn-sm me-2"><i class="bi bi-calendar-week"></i> Agenda</a>
-                <a id="btnAdmin" href="/admin.html" class="btn btn-outline-warning btn-sm me-2 d-none" title="Admin"><i class="bi bi-gear"></i> Admin</a>
-                <a href="/conta.html" class="btn btn-outline-light btn-sm me-2 active" title="Minha Conta"><i class="bi bi-person-circle"></i></a>
-                <button id="btnSair" class="btn btn-outline-light btn-sm">Sair</button>
+            <a class="navbar-brand fw-bold text-primary" href="/treinos.html">
+                <i class="bi bi-lightning-charge-fill me-2"></i>Sistema de Treinos
+            </a>
+            <div class="d-flex align-items-center">
+                <a id="btnAlunos" href="/alunos.html" class="btn btn-modern btn-modern-outline btn-sm me-2 d-none"><i
+                        class="bi bi-people"></i> Alunos</a>
+                <a id="btnAgenda" href="/agenda.html"
+                    class="btn btn-modern btn-modern-outline btn-sm me-2 text-nowrap"><i
+                        class="bi bi-calendar-week"></i> Agenda</a>
+                <a id="btnAdmin" href="/admin.html"
+                    class="btn btn-modern btn-modern-outline btn-sm me-2 d-none text-warning" title="Admin"><i
+                        class="bi bi-gear"></i></a>
+                <a href="/conta.html" class="btn btn-modern btn-modern-primary btn-sm me-2 active"
+                    title="Minha Conta"><i class="bi bi-person-circle"></i></a>
+                <button id="btnSair" class="btn btn-modern btn-modern-primary btn-sm">Sair</button>
             </div>
         </div>
     </nav>
 
     <div class="container" style="max-width: 600px;">
-        <h5 class="mb-3"><i class="bi bi-person-circle"></i> Minha Conta</h5>
-        <div id="alertConta" class="alert d-none"></div>
+        <h4 class="fw-bold mb-4"><i class="bi bi-person-circle text-primary me-2"></i>Minha Conta</h4>
+        <div id="alertConta" class="alert d-none rounded-3"></div>
 
-        <div class="mb-3">
-            <label class="form-label">Login</label>
-            <input type="text" id="contaLogin" class="form-control" disabled>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">E-mail</label>
-            <input type="email" id="contaEmail" class="form-control" placeholder="seu@email.com">
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Nome</label>
-            <input type="text" id="contaNome" class="form-control" required>
-        </div>
-        <div class="row mb-3">
-            <div class="col-4">
-                <label class="form-label">Peso (kg)</label>
-                <input type="number" id="contaPeso" class="form-control" step="0.1" min="0">
+        <div class="card-modern p-4 mb-4">
+            <h6 class="fw-bold mb-3 text-uppercase small text-muted">Informações Básicas</h6>
+            <div class="mb-3">
+                <label class="form-label small fw-medium">Login</label>
+                <input type="text" id="contaLogin" class="form-control form-control-modern" disabled>
             </div>
-            <div class="col-4">
-                <label class="form-label">Altura (cm)</label>
-                <input type="number" id="contaAltura" class="form-control" step="0.1" min="0">
+            <div class="mb-3">
+                <label class="form-label small fw-medium">E-mail</label>
+                <input type="email" id="contaEmail" class="form-control form-control-modern"
+                    placeholder="seu@email.com">
             </div>
-            <div class="col-4">
-                <label class="form-label">Meta Peso (kg)</label>
-                <input type="number" id="contaPesoMeta" class="form-control" step="0.1" min="0">
+            <div class="mb-3">
+                <label class="form-label small fw-medium">Nome</label>
+                <input type="text" id="contaNome" class="form-control form-control-modern" required>
             </div>
         </div>
-        <div class="mb-3">
-            <button type="button" id="btnRegistrarMedidas" class="btn btn-outline-success btn-sm"><i class="bi bi-clipboard-pulse"></i> Registrar Medidas</button>
+
+        <div class="card-modern p-4 mb-4">
+            <h6 class="fw-bold mb-3 text-uppercase small text-muted">Medidas e Metas</h6>
+            <div class="row g-3 mb-4">
+                <div class="col-4">
+                    <label class="form-label small fw-medium text-nowrap">Peso (kg)</label>
+                    <input type="number" id="contaPeso" class="form-control form-control-modern" step="0.1" min="0">
+                </div>
+                <div class="col-4">
+                    <label class="form-label small fw-medium text-nowrap">Altura (cm)</label>
+                    <input type="number" id="contaAltura" class="form-control form-control-modern" step="0.1" min="0">
+                </div>
+                <div class="col-4">
+                    <label class="form-label small fw-medium text-nowrap">Meta (kg)</label>
+                    <input type="number" id="contaPesoMeta" class="form-control form-control-modern" step="0.1" min="0">
+                </div>
+            </div>
+            <button type="button" id="btnRegistrarMedidas" class="btn btn-modern btn-modern-outline w-100 py-3"><i
+                    class="bi bi-clipboard-pulse"></i> Atualizar Medidas</button>
         </div>
-        <div id="divHistoricoMedidas" class="mb-3 d-none">
-            <h6 class="mb-2">Historico de Medidas</h6>
-            <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
-                <table class="table table-sm table-striped">
-                    <thead><tr><th>Data</th><th>Peso</th><th>Altura</th><th>Meta</th></tr></thead>
-                    <tbody id="tabelaMedidas"></tbody>
+
+        <div id="divHistoricoMedidas" class="card-modern p-4 mb-4 d-none">
+            <h6 class="fw-bold mb-3 text-uppercase small text-muted">Histórico de Medidas</h6>
+            <div class="table-responsive" style="max-height: 250px;">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="small fw-bold text-muted">Data</th>
+                            <th class="small fw-bold text-muted">Peso</th>
+                            <th class="small fw-bold text-muted text-nowrap">Alt</th>
+                            <th class="small fw-bold text-muted text-nowrap">Meta</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaMedidas" class="small"></tbody>
                 </table>
             </div>
         </div>
-        <hr>
-        <div id="avisoSenhaTemp" class="alert alert-warning d-none">Voce esta usando uma senha temporaria. Por favor, defina uma nova senha.</div>
-        <p id="dicaSenha" class="text-muted mb-2">Deixe os campos de senha em branco para manter a senha atual.</p>
-        <div class="mb-3" id="divSenhaAtual">
-            <label class="form-label">Senha Atual</label>
-            <input type="password" id="contaSenhaAtual" class="form-control">
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Nova Senha</label>
-            <input type="password" id="contaSenhaNova" class="form-control">
-        </div>
-        <hr>
-        <!-- Secao Meu Treinador (para USU) -->
-        <div id="secaoMeuTreinador" class="d-none">
-            <h6>Meu Treinador</h6>
-            <div id="treinadorAtual" class="d-none mb-2">
-                <p class="mb-1">Treinador: <strong id="nomeTreinadorAtual"></strong></p>
-                <p class="text-muted mb-0"><small id="emailTreinadorAtual"></small></p>
-                <button id="btnAbandonarTreinador" class="btn btn-sm btn-outline-danger mt-2"><i class="bi bi-person-x"></i> Desvincular</button>
+
+        <div class="card-modern p-4 mb-4">
+            <h6 class="fw-bold mb-3 text-uppercase small text-muted">Segurança</h6>
+            <div id="avisoSenhaTemp"
+                class="alert bg-warning-subtle text-warning-emphasis border-0 mb-4 rounded-3 small">
+                <i class="bi bi-exclamation-triangle me-2"></i>Senha temporária detectada. Por favor, defina uma nova
+                senha.
             </div>
-            <div id="semTreinador" class="d-none mb-2">
-                <p class="text-muted">Voce nao possui treinador vinculado.</p>
-                <div class="input-group">
-                    <input type="email" id="emailSolicitarTreinador" class="form-control" placeholder="E-mail do treinador">
-                    <button id="btnSolicitarTreinador" class="btn btn-outline-primary">Solicitar</button>
+            <p id="dicaSenha" class="text-muted small mb-3">Preencha apenas se desejar alterar sua senha atual.</p>
+            <div class="mb-3" id="divSenhaAtual">
+                <label class="form-label small fw-medium">Senha Atual</label>
+                <input type="password" id="contaSenhaAtual" class="form-control form-control-modern">
+            </div>
+            <div class="mb-0">
+                <label class="form-label small fw-medium">Nova Senha</label>
+                <input type="password" id="contaSenhaNova" class="form-control form-control-modern">
+            </div>
+        </div>
+
+        <!-- Seção Meu Treinador -->
+        <div id="secaoMeuTreinador" class="card-modern p-4 mb-4 d-none">
+            <h6 class="fw-bold mb-3 text-uppercase small text-muted">Vínculos</h6>
+            <div id="treinadorAtual" class="d-none bg-primary-subtle border-0 rounded-4 p-4 text-center">
+                <i class="bi bi-person-workspace fs-1 d-block mb-2 text-primary"></i>
+                <div class="fw-bold text-primary mb-1" id="nomeTreinadorAtual"></div>
+                <div class="text-primary small mb-4 opacity-75" id="emailTreinadorAtual"></div>
+                <button id="btnAbandonarTreinador"
+                    class="btn btn-modern btn-modern-outline text-danger border-danger-subtle bg-white w-100"><i
+                        class="bi bi-person-x"></i> Desvincular Treinador</button>
+            </div>
+            <div id="semTreinador" class="d-none">
+                <p class="text-muted small mb-3">Você não possui um treinador vinculado.</p>
+                <div class="input-group gap-2">
+                    <input type="email" id="emailSolicitarTreinador" class="form-control form-control-modern"
+                        placeholder="E-mail do treinador">
+                    <button id="btnSolicitarTreinador"
+                        class="btn btn-modern btn-modern-primary px-4 shadow-sm">Solicitar</button>
                 </div>
-                <div id="alertSolicitacao" class="alert d-none mt-2"></div>
+                <div id="alertSolicitacao" class="alert d-none mt-3 rounded-3"></div>
             </div>
         </div>
         <!-- Info para TRE -->
-        <div id="secaoInfoTreinador" class="d-none">
-            <p class="text-muted"><i class="bi bi-mortarboard"></i> Voce e um treinador.</p>
+        <div id="secaoInfoTreinador" class="card-modern p-4 mb-4 d-none bg-primary-subtle border-0 text-center">
+            <i class="bi bi-mortarboard fs-1 d-block mb-2 text-primary"></i>
+            <p class="text-primary fw-bold mb-0">Você é um treinador certificado.</p>
         </div>
 
-        <div class="d-flex justify-content-between mt-4 mb-4">
-            <a href="#" id="btnVoltar" class="btn btn-secondary">Voltar</a>
-            <button type="button" id="btnSalvarConta" class="btn btn-primary">Salvar</button>
+        <div class="d-flex gap-3 mt-4 mb-5">
+            <a href="#" id="btnVoltar" class="btn btn-modern btn-modern-outline w-100 py-3 text-muted">Voltar</a>
+            <button type="button" id="btnSalvarConta"
+                class="btn btn-modern btn-modern-primary w-100 py-3 shadow-sm">Salvar Alterações</button>
         </div>
     </div>
 
@@ -119,7 +160,7 @@
             $.ajax({
                 url: '/usuario',
                 type: 'GET',
-                success: function(response) {
+                success: function (response) {
                     $('#contaLogin').val(response.no_login);
                     $('#contaEmail').val(response.tx_email || '');
                     $('#contaNome').val(response.no_usuario);
@@ -146,7 +187,7 @@
                         $('#contaSenhaNova').focus();
                     }
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     if (xhr.status === 401) { window.location.href = '/index.html'; return; }
                     $('#alertConta').removeClass('d-none alert-success').addClass('alert-danger').text('Erro ao carregar dados da conta.');
                 }
@@ -157,7 +198,7 @@
             $.ajax({
                 url: '/meu-treinador',
                 type: 'GET',
-                success: function(response) {
+                success: function (response) {
                     if (response.treinador) {
                         $('#treinadorAtual').removeClass('d-none');
                         $('#semTreinador').addClass('d-none');
@@ -175,7 +216,7 @@
             $.ajax({
                 url: '/usuario/medidas',
                 type: 'GET',
-                success: function(response) {
+                success: function (response) {
                     var tbody = $('#tabelaMedidas');
                     tbody.empty();
                     if (response.medidas.length === 0) {
@@ -183,7 +224,7 @@
                         return;
                     }
                     $('#divHistoricoMedidas').removeClass('d-none');
-                    response.medidas.forEach(function(m) {
+                    response.medidas.forEach(function (m) {
                         tbody.append(
                             '<tr>' +
                             '<td>' + m.dt_medida + '</td>' +
@@ -198,7 +239,7 @@
         }
 
         // Registrar medidas
-        $('#btnRegistrarMedidas').on('click', function() {
+        $('#btnRegistrarMedidas').on('click', function () {
             var dados = {
                 nr_peso: $('#contaPeso').val() || null,
                 nr_altura: $('#contaAltura').val() || null,
@@ -209,12 +250,12 @@
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(dados),
-                success: function(response) {
+                success: function (response) {
                     $('#alertConta').removeClass('d-none alert-danger').addClass('alert-success').text(response.message);
-                    setTimeout(function() { $('#alertConta').addClass('d-none'); }, 2000);
+                    setTimeout(function () { $('#alertConta').addClass('d-none'); }, 2000);
                     carregarHistoricoMedidas();
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao registrar medida";
                     $('#alertConta').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
                 }
@@ -222,7 +263,7 @@
         });
 
         // Salvar conta
-        $('#btnSalvarConta').on('click', function() {
+        $('#btnSalvarConta').on('click', function () {
             var nome = $('#contaNome').val().trim();
             if (!nome) {
                 $('#alertConta').removeClass('d-none alert-success').addClass('alert-danger').text('Informe o nome.');
@@ -246,7 +287,7 @@
                 type: 'PUT',
                 contentType: 'application/json',
                 data: JSON.stringify(dados),
-                success: function(response) {
+                success: function (response) {
                     $('#alertConta').removeClass('d-none alert-danger').addClass('alert-success').text(response.message);
                     $('#contaSenhaAtual').val('');
                     $('#contaSenhaNova').val('');
@@ -258,7 +299,7 @@
                         $('#avisoSenhaTemp').addClass('d-none');
                     }
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     if (xhr.status === 401) { window.location.href = '/index.html'; return; }
                     var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao atualizar conta";
                     $('#alertConta').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
@@ -267,16 +308,16 @@
         });
 
         // Abandonar treinador
-        $('#btnAbandonarTreinador').on('click', function() {
+        $('#btnAbandonarTreinador').on('click', function () {
             var nome = $('#nomeTreinadorAtual').text();
             if (!confirm('Abandonar treinador "' + nome + '"?')) return;
             $.ajax({
                 url: '/meu-treinador',
                 type: 'DELETE',
-                success: function() {
+                success: function () {
                     carregarMeuTreinador();
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     if (xhr.status === 401) { window.location.href = '/index.html'; return; }
                     var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao abandonar treinador";
                     alert(msg);
@@ -285,7 +326,7 @@
         });
 
         // Solicitar treinador
-        $('#btnSolicitarTreinador').on('click', function() {
+        $('#btnSolicitarTreinador').on('click', function () {
             var email = $('#emailSolicitarTreinador').val().trim();
             if (!email) {
                 $('#alertSolicitacao').removeClass('d-none alert-success').addClass('alert-danger').text('Informe o e-mail do treinador.');
@@ -296,11 +337,11 @@
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ tx_email_treinador: email }),
-                success: function(response) {
+                success: function (response) {
                     $('#alertSolicitacao').removeClass('d-none alert-danger').addClass('alert-success').text(response.message);
                     $('#emailSolicitarTreinador').val('');
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     var msg = xhr.responseJSON ? xhr.responseJSON.message : "Erro ao enviar solicitacao";
                     $('#alertSolicitacao').removeClass('d-none alert-success').addClass('alert-danger').text(msg);
                 }
@@ -308,7 +349,7 @@
         });
 
         // Botao voltar - volta para treinos ou alunos conforme tipo
-        $('#btnVoltar').on('click', function(e) {
+        $('#btnVoltar').on('click', function (e) {
             e.preventDefault();
             if (tipoUsuario === 'TRE' || tipoUsuario === 'ADM') {
                 window.location.href = '/alunos.html';
@@ -318,11 +359,12 @@
         });
 
         // Inicializar
-        $(document).ready(function() {
-            inicializar(function() {
+        $(document).ready(function () {
+            inicializar(function () {
                 carregarDadosConta();
             });
         });
     </script>
 </body>
+
 </html>

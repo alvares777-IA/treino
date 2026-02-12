@@ -1,18 +1,24 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <link rel="icon" type="image/png" href="/favicon.png?v=2">
+    <link rel="icon" type="image/png" href="/favicon.png?v=2">
     <title>Treinando</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
 </head>
+
 <body>
-    <nav class="navbar navbar-dark bg-dark mb-4">
+    <nav class="navbar navbar-expand-lg navbar-modern sticky-top mb-4">
         <div class="container-fluid">
-            <span class="navbar-brand">Exercicios do Treino</span>
-            <a id="linkVoltar" href="/treinos.html" class="btn btn-outline-light btn-sm">Voltar</a>
+            <a class="navbar-brand fw-bold text-primary" href="/treinos.html">
+                <i class="bi bi-activity me-2"></i>Sessão de Treino
+            </a>
+            <a href="/treinos.html" class="btn btn-modern btn-modern-outline btn-sm">Sair</a>
         </div>
     </nav>
 
@@ -45,11 +51,11 @@
     <script>
         var ajaxAtivo = 0;
         $.ajaxSetup({
-            beforeSend: function() {
+            beforeSend: function () {
                 ajaxAtivo++;
                 $('button, .btn').prop('disabled', true);
             },
-            complete: function() {
+            complete: function () {
                 ajaxAtivo--;
                 if (ajaxAtivo <= 0) {
                     ajaxAtivo = 0;
@@ -60,44 +66,44 @@
 
 
         function iniciarCronometro(botao) {
-                var $btn = $(botao);
-                
-                // Evita múltiplos cliques se já estiver rodando
-                if ($btn.hasClass('running')) return;
-                
-                $btn.addClass('running btn-warning text-dark').removeClass('btn-outline-warning');
-                
-                var tempo = 60; // 1 minuto
-                
-                var intervalo = setInterval(function() {
-                    tempo--;
-                    
-                    var minutos = Math.floor(tempo / 60);
-                    var segundos = tempo % 60;
-                    
-                    // Formata para 0:00
-                    $btn.html('<i class="bi bi-clock-history"></i> ' + minutos + ':' + (segundos < 10 ? '0' : '') + segundos);
-                    
-                    if (tempo <= 0) {
-                        clearInterval(intervalo);
-                        $btn.removeClass('running btn-warning text-dark').addClass('btn-success text-white');
-                        $btn.html('<i class="bi bi-check-lg"></i> Pronto!');
-                        
-                        // Opcional: Tocar um bip sonoro aqui
-                        var beep = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
-                        beep.play();
+            var $btn = $(botao);
 
-                        // Volta ao estado original após 3 segundos
-                        setTimeout(function() {
-                            $btn.removeClass('btn-success text-white').addClass('btn-outline-warning');
-                            $btn.html('<i class="bi bi-stopwatch"></i> 1:00');
-                            $btn.removeClass('running');
-                        }, 3000);
-                    }
-                }, 1000);
-        } 
+            // Evita múltiplos cliques se já estiver rodando
+            if ($btn.hasClass('running')) return;
 
-        $(document).ready(function() {
+            $btn.addClass('running btn-warning text-dark').removeClass('btn-outline-warning');
+
+            var tempo = 60; // 1 minuto
+
+            var intervalo = setInterval(function () {
+                tempo--;
+
+                var minutos = Math.floor(tempo / 60);
+                var segundos = tempo % 60;
+
+                // Formata para 0:00
+                $btn.html('<i class="bi bi-clock-history"></i> ' + minutos + ':' + (segundos < 10 ? '0' : '') + segundos);
+
+                if (tempo <= 0) {
+                    clearInterval(intervalo);
+                    $btn.removeClass('running btn-warning text-dark').addClass('btn-success text-white');
+                    $btn.html('<i class="bi bi-check-lg"></i> Pronto!');
+
+                    // Opcional: Tocar um bip sonoro aqui
+                    var beep = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+                    beep.play();
+
+                    // Volta ao estado original após 3 segundos
+                    setTimeout(function () {
+                        $btn.removeClass('btn-success text-white').addClass('btn-outline-warning');
+                        $btn.html('<i class="bi bi-stopwatch"></i> 1:00');
+                        $btn.removeClass('running');
+                    }, 3000);
+                }
+            }, 1000);
+        }
+
+        $(document).ready(function () {
             var params = new URLSearchParams(window.location.search);
             var idTreino = params.get('id_treino');
             var idUsuario = params.get('id_usuario');
@@ -123,7 +129,7 @@
             $.ajax({
                 url: '/treinando/' + idTreino,
                 type: 'GET',
-                success: function(response) {
+                success: function (response) {
                     var tbody = $('#tabelaExercicios');
                     tbody.empty();
                     if (response.exercicios.length === 0) {
@@ -145,8 +151,8 @@
                             '</tr>'
                         );
                     });*/
-                    
-                    response.exercicios.forEach(function(ex) {
+
+                    response.exercicios.forEach(function (ex) {
                         var urlFormatada = formatUrl(ex.tx_url);
                         var linkCell = urlFormatada
                             ? '<a href="' + urlFormatada + '" target="_blank" class="btn btn-sm btn-outline-info"><i class="bi bi-play-circle"></i> Ver</a>'
@@ -174,7 +180,7 @@
 
                     $('#tabelaContainer').removeClass('d-none');
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     if (xhr.status === 401) {
                         window.location.href = '/index.html';
                         return;
@@ -187,4 +193,5 @@
         });
     </script>
 </body>
+
 </html>
